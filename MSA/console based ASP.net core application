@@ -1,0 +1,84 @@
+Practical No 1
+Aim : Create a console based ASP.net core application.
+Source Code : 
+Step 1 : 
+Download the asp.net core sdk from https://dotnet.microsoft.com/learn/dotnet/hello-worldtutorial/install 
+Install the asp.net core sdk.
+To check whether the asp.net sdk is successful install, open command prompt and type command: dotnet  
+To check the version of the dotnet
+
+Step 2 : 
+Go to the drive where you want to create the console application. Create a folder in the drive and go to that folder. 
+Type the following command in the command prompt to create the application.
+cd
+md Hello World
+cd Hell*
+donet new console
+Restore the project and run the application
+cd hell*
+dotnet restore
+dotnet run
+
+Step 3 : 
+Now open HelloWorld.csproj file, edit the code
+
+<Project Sdk="Microsoft.NET.Sdk">
+ <PropertyGroup>
+<OutputType>Exe</OutputType>
+<TargetFramework>net6.0</TargetFramework>
+<ImplicitUsings>enable</ImplicitUsings>
+<Nullable>enable</Nullable>
+</PropertyGroup>
+<ItemGroup>
+<PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.1"/>
+<PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.1"/>
+<PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1"/>
+<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1"/>
+<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1"/>
+<PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="1.1.1"/>
+</ItemGroup>
+</Project>
+
+Open Program.cs file and edit the code
+
+using System;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+namespace HelloWorld // Note: actual namespace depends on the project name.
+{
+internal class Program
+    	{
+        		static void Main(string[] args)
+{
+var config = new ConfigurationBuilder()
+    .AddCommandLine(args)
+    .Build();
+var host = new WebHostBuilder()
+ .UseKestrel()
+ .UseStartup<Startup>()
+ .UseConfiguration(config)
+ .Build();
+host.Run();
+}
+    	}
+public class Startup
+{
+public Startup(IHostingEnvironment env) { } 
+public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+{
+app.Run(async (context) => { await context.Response.WriteAsync("Hello, world!");});
+}
+}
+}
+
+Step 4 :
+Restore the project.
+dotnet restore
+
+
+output:
+HelloWorld>dotnet run
+Now open the browser open the url: http://localhost:5000

@@ -1,0 +1,70 @@
+Practical No 4
+Aim : Working with Docker
+Commands and its output :
+Step 1:
+Create a account in the docker hub. Remember the username and password of the account
+
+Step 2 : 
+Now to go https://labs.play-with-docker.com/  and click on Start button.
+Click on Add New Instance. You will see the editor open in the right pane. Give the commands in the editor
+
+Step 3 :
+To check the version of the docker 
+$ docker – version
+
+To pull the readymade image
+$ docker pull hello-world 
+
+To check the images in docker
+$ docker images
+
+Part 1: To pull and Push images in docker
+ Step 4 :
+Open the new tab in the browser and login to hub.docker.com 
+Click on Repositories and then click on Create Repositories
+Give the name of the repository as “repo1” and in description add “My first repository”
+Make visibility as Private
+And now click on Create button and check whether the repository is created or not.
+
+  Step 5 :
+Now come to the https://labs.play-with-docker.com/ and give the following command
+Login into docker account
+$ docker login -username= your_user_name
+password:
+Note: Give your username and password that you have used to login to hub.docker.com 
+
+
+To tag an image in docker
+$ docker tag <image id> <username>/repo1: firsttry
+
+To push the image to docker account
+$ docker push <username>/repo1:firsttry
+
+Note: firsttry is tag name created above.
+Check it in hub.docker.com now in tags tab
+
+
+Part 2 : Build and image and then push and run in the docker0
+  Step 6 :
+In https://labs.play-with-docker.com/ give the following command
+cat > Dockerfile <<EOF
+FROM busybox
+CMD echo "Hello world! This is my first Docker image."
+EOF
+
+To build the image from docker file
+$ docker build –t <username>/repo2 .
+
+Check images in docker
+$ docker images
+
+To push the image on the docker hub
+$ docker push <username>/repo2.
+
+Check it in hub.docker.com now in tags tab
+
+Come back to the https://labs.play-with-docker.com/ and give the below command to run the docker image
+$ docker run <username>/repo2
+
+Close the session
+
