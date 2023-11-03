@@ -1,0 +1,445 @@
+PRACTICAL 01
+Develop an ASP.NET Core MVC based Stateful Web App
+
+Step 1: Create Project
+Launch Visual Studio as an administrator.
+Create a project with File >New >Project.
+In the New Project dialog, choose Cloud > Service Fabric Application.
+Name the application Voting and click OK.
+On the New Service Fabric Service page, choose Stateless ASP.NET Core, name your service VotingWeb, then click OK.
+The next page provides a set of ASP.NET Core project templates. For this practical, choose Web Application (Model-View-Controller), then click OK.
+Visual Studio creates an application and a service project and displays them in Solution Explorer.
+
+Step 2: Create and update the files
+In this step we will create and will update file in the VotingWeb project 
+2.1 Update the site.js file
+Open wwwroot/js/site.js. Replace its contents with the following JavaScript used by the Home views, then save your changes.
+var app = angular.module('VotingApp', ['ui.bootstrap']);
+app.run(function () { });
+
+app.controller('VotingAppController', ['$rootScope', '$scope', '$http', '$timeout', function ($rootScope, $scope, $http, $timeout) {
+
+    $scope.refresh = function () {
+        $http.get('api/Votes?c=' + new Date().getTime())
+            .then(function (data, status) {
+                $scope.votes = data;
+            }, function (data, status) {
+                $scope.votes = undefined;
+            });
+    };
+
+    $scope.remove = function (item) {
+        $http.delete('api/Votes/' + item)
+            .then(function (data, status) {
+                $scope.refresh();
+            })
+    };
+
+    $scope.add = function (item) {
+        var fd = new FormData();
+        fd.append('item', item);
+        $http.put('api/Votes/' + item, fd, {
+            transformRequest: angular.identity,
+            headers: { 'Content-Type': undefined }
+        })
+            .then(function (data, status) {
+                $scope.refresh();
+                $scope.item = undefined;
+            })
+    };
+}]);
+
+
+2.2 Update the Index.cshtml file
+Open Views/Home/Index.cshtml, the view specific to the Home controller. Replace its contents with the following, then save your changes.
+
+@{
+    ViewData["Title"] = "Service Fabric Voting Sample";
+}
+
+<div ng-controller="VotingAppController" ng-init="refresh()">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-8 col-xs-offset-2 text-center">
+                <h2>Service Fabric Voting Sample</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-8 col-xs-offset-2">
+                <form class="col-xs-12 center-block">
+                    <div class="col-xs-6 form-group">
+                        <input id="txtAdd" type="text" class="form-control" placeholder="Add voting option" ng-model="item"/>
+                    </div>
+                    <button id="btnAdd" class="btn btn-default" ng-click="add(item)">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        Add
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="row">
+            <div class="col-xs-8 col-xs-offset-2">
+                <div class="row">
+                    <div class="col-xs-4">
+                        Click to vote
+                    </div>
+                </div>
+                <div class="row top-buffer" ng-repeat="vote in votes.data">
+                    <div class="col-xs-8">
+                        <button class="btn btn-success text-left btn-block" ng-click="add(vote.key)">
+                            <span class="pull-left">
+                                {{vote.key}}
+                            </span>
+                            <span class="badge pull-right">
+                                {{vote.value}} Votes
+                            </span>
+                        </button>
+                    </div>
+                    <div class="col-xs-4">
+                        <button class="btn btn-danger pull-right btn-block" ng-click="remove(vote.key)">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                            Remove
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+2.3 Update the _Layout.cshtml file
+Open Views/Shared/_Layout.cshtml, the default layout for the ASP.NET app. Replace its contents with the following, then save your changes.
+<!DOCTYPE html>
+<html ng-app="VotingApp" xmlns:ng="http://angularjs.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"]</title>
+
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="~/css/site.css" rel="stylesheet"/>
+
+</head>
+<body>
+<div class="container body-content">
+    @RenderBody()
+</div>
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+<script src="~/lib/angular/angular.js"></script>
+<script src="~/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="~/js/site.js"></script>
+
+@RenderSection("Scripts", required: false)
+</body>
+</html>
+
+
+
+2.4 Update the VotingWeb.cs file
+Open the VotingWeb.cs file, which creates the ASP.NET Core WebHost inside the stateless service using the WebListener web server.
+Replace the content with the following code, then save your changes.
+namespace VotingWeb
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Fabric;
+    using System.IO;
+    using System.Net.Http;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.ServiceFabric.Services.Communication.AspNetCore;
+    using Microsoft.ServiceFabric.Services.Communication.Runtime;
+    using Microsoft.ServiceFabric.Services.Runtime;
+
+    internal sealed class VotingWeb : StatelessService
+    {
+        public VotingWeb(StatelessServiceContext context)
+            : base(context)
+        {
+        }
+
+        protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
+        {
+            return new ServiceInstanceListener[]
+            {
+        new ServiceInstanceListener(
+            serviceContext =>
+                new KestrelCommunicationListener(
+                    serviceContext,
+                    "ServiceEndpoint",
+                    (url, listener) =>
+                    {
+                        ServiceEventSource.Current.ServiceMessage(serviceContext, $"Starting Kestrel on {url}");
+
+                        return new WebHostBuilder()
+                            .UseKestrel()
+                            .ConfigureServices(
+                                services => services
+                                    .AddSingleton<HttpClient>(new HttpClient())
+                                    .AddSingleton<FabricClient>(new FabricClient())
+                                    .AddSingleton<StatelessServiceContext>(serviceContext))
+                            .UseContentRoot(Directory.GetCurrentDirectory())
+                            .UseStartup<Startup>()
+                            .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
+                            .UseUrls(url)
+                            .Build();
+                    }))
+            };
+        }
+
+        internal static Uri GetVotingDataServiceName(ServiceContext context)
+        {
+            return new Uri($"{context.CodePackageActivationContext.ApplicationName}/VotingData");
+        }
+    }
+}
+
+2.5 Add the VotesController.cs file
+a.Add a controller, which defines voting actions. Right-click on the Controllers folder, then select Add->New item->Visual C#->ASP.NET Core->Class. Name the file VotesController.cs, then click Add.
+b.Replace the VotesController.cs file contents with the following, then save your changes this file is modified to read and write voting data from the back-end service.
+
+namespace VotingWeb.Controllers
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Fabric;
+    using System.Fabric.Query;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Text;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Mvc;
+    using Newtonsoft.Json;
+
+    [Produces("application/json")]
+    [Route("api/[controller]")]
+    public class VotesController : Controller
+    {
+        private readonly HttpClient httpClient;
+        private readonly FabricClient fabricClient;
+        private readonly string reverseProxyBaseUri;
+        private readonly StatelessServiceContext serviceContext;
+
+        public VotesController(HttpClient httpClient, StatelessServiceContext context, FabricClient fabricClient)
+        {
+            this.fabricClient = fabricClient;
+            this.httpClient = httpClient;
+            this.serviceContext = context;
+            this.reverseProxyBaseUri = Environment.GetEnvironmentVariable("ReverseProxyBaseUri");
+        }
+
+        // GET: api/Votes
+        [HttpGet("")]
+        public async Task<IActionResult> Get()
+        {
+            Uri serviceName = VotingWeb.GetVotingDataServiceName(this.serviceContext);
+            Uri proxyAddress = this.GetProxyAddress(serviceName);
+
+            ServicePartitionList partitions = await this.fabricClient.QueryManager.GetPartitionListAsync(serviceName);
+
+            List<KeyValuePair<string, int>> result = new List<KeyValuePair<string, int>>();
+
+            foreach (Partition partition in partitions)
+            {
+                string proxyUrl =
+                    $"{proxyAddress}/api/VoteData?PartitionKey={((Int64RangePartitionInformation) partition.PartitionInformation).LowKey}&PartitionKind=Int64Range";
+
+                using (HttpResponseMessage response = await this.httpClient.GetAsync(proxyUrl))
+                {
+                    if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                    {
+                        continue;
+                    }
+
+                    result.AddRange(JsonConvert.DeserializeObject<List<KeyValuePair<string, int>>>(await response.Content.ReadAsStringAsync()));
+                }
+            }
+
+            return this.Json(result);
+        }
+
+        // PUT: api/Votes/name
+        [HttpPut("{name}")]
+        public async Task<IActionResult> Put(string name)
+        {
+            Uri serviceName = VotingWeb.GetVotingDataServiceName(this.serviceContext);
+            Uri proxyAddress = this.GetProxyAddress(serviceName);
+            long partitionKey = this.GetPartitionKey(name);
+            string proxyUrl = $"{proxyAddress}/api/VoteData/{name}?PartitionKey={partitionKey}&PartitionKind=Int64Range";
+
+            StringContent putContent = new StringContent($"{{ 'name' : '{name}' }}", Encoding.UTF8, "application/json");
+            putContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            using (HttpResponseMessage response = await this.httpClient.PutAsync(proxyUrl, putContent))
+            {
+                return new ContentResult()
+                {
+                    StatusCode = (int) response.StatusCode,
+                    Content = await response.Content.ReadAsStringAsync()
+                };
+            }
+        }
+
+        // DELETE: api/Votes/name
+        [HttpDelete("{name}")]
+        public async Task<IActionResult> Delete(string name)
+        {
+            Uri serviceName = VotingWeb.GetVotingDataServiceName(this.serviceContext);
+            Uri proxyAddress = this.GetProxyAddress(serviceName);
+            long partitionKey = this.GetPartitionKey(name);
+            string proxyUrl = $"{proxyAddress}/api/VoteData/{name}?PartitionKey={partitionKey}&PartitionKind=Int64Range";
+
+            using (HttpResponseMessage response = await this.httpClient.DeleteAsync(proxyUrl))
+            {
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    return this.StatusCode((int) response.StatusCode);
+                }
+            }
+
+            return new OkResult();
+        }
+
+
+        /// <summary>
+        /// Constructs a reverse proxy URL for a given service.
+        /// Example: http://localhost:19081/VotingApplication/VotingData/
+        /// </summary>
+        /// <param name="serviceName"></param>
+        /// <returns></returns>
+        private Uri GetProxyAddress(Uri serviceName)
+        {
+            return new Uri($"{this.reverseProxyBaseUri}{serviceName.AbsolutePath}");
+        }
+
+        /// <summary>
+        /// Creates a partition key from the given name.
+        /// Uses the zero-based numeric position in the alphabet of the first letter of the name (0-25).
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        private long GetPartitionKey(string name)
+        {
+            return Char.ToUpper(name.First()) - 'A';
+        }
+    }
+}
+
+
+Step 3: Add a stateful back-end service to your application
+a.In Solution Explorer, right-click Services within the Voting application project and choose Add -> New Service Fabric Service....
+b.In the New Service Fabric Service dialog, choose Stateful ASP.NET Core, name the service VotingData, then press Create.
+Once your service project is created, you have two services in your application. As you continue to build your application, you can add more services in the same way. Each can be independently versioned and upgraded.
+The next page provides a set of ASP.NET Core project templates. choose API.
+Visual Studio creates the VotingData service project and displays it in Solution Explorer.
+
+
+
+
+
+
+3.1 Add the VoteDataController.cs file
+a.In the VotingData project, right-click on the Controllers folder, then select Add->New item->Class. Name the file VoteDataController.cs and click Add.
+b.Replace the file contents with the following, then save your changes.
+
+namespace VotingData.Controllers
+{
+    using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.ServiceFabric.Data;
+    using Microsoft.ServiceFabric.Data.Collections;
+
+    [Route("api/[controller]")]
+    public class VoteDataController : Controller
+    {
+        private readonly IReliableStateManager stateManager;
+
+        public VoteDataController(IReliableStateManager stateManager)
+        {
+            this.stateManager = stateManager;
+        }
+
+        // GET api/VoteData
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            CancellationToken ct = new CancellationToken();
+
+            IReliableDictionary<string, int> votesDictionary = 
+                await this.stateManager.GetOrAddAsync<IReliableDictionary<string, int>>("counts");
+
+            using (ITransaction tx = this.stateManager.CreateTransaction())
+            {
+                var list = await votesDictionary.CreateEnumerableAsync(tx);
+
+                var enumerator = list.GetAsyncEnumerator();
+
+                List<KeyValuePair<string, int>> result = new List<KeyValuePair<string, int>>();
+
+                while (await enumerator.MoveNextAsync(ct))
+                {
+                    result.Add(enumerator.Current);
+                }
+
+                return this.Json(result);
+            }
+        }
+
+        // PUT api/VoteData/name
+        [HttpPut("{name}")]
+        public async Task<IActionResult> Put(string name)
+        {
+            IReliableDictionary<string, int> votesDictionary = await this.stateManager.GetOrAddAsync<IReliableDictionary<string, int>>("counts");
+
+            using (ITransaction tx = this.stateManager.CreateTransaction())
+            {
+                await votesDictionary.AddOrUpdateAsync(tx, name, 1, (key, oldvalue) => oldvalue + 1);
+                await tx.CommitAsync();
+            }
+
+            return new OkResult();
+        }
+
+        // DELETE api/VoteData/name
+        [HttpDelete("{name}")]
+        public async Task<IActionResult> Delete(string name)
+        {
+            IReliableDictionary<string, int> votesDictionary = await this.stateManager.GetOrAddAsync<IReliableDictionary<string, int>>("counts");
+
+            using (ITransaction tx = this.stateManager.CreateTransaction())
+            {
+                if (await votesDictionary.ContainsKeyAsync(tx, name))
+                {
+                    await votesDictionary.TryRemoveAsync(tx, name);
+                    await tx.CommitAsync();
+                    return new OkResult();
+                }
+                else
+                {
+                    return new NotFoundResult();
+                }
+            }
+        }
+    }
+}
+Step 4: Publish Service Fabric application
+a.In the solution Explorer Right click on the Voting and select Publish. The Publish dialog box appears.
+b.To open the service fabric explorer, open the Browser and paste the following IP address  http://localhost:19080/
+c.Go to cluster  >Application  >Voting Type  >fabric:/Voting  >fabric:/VotingWeb  > 8482ef73-476d-45a6-aca9-b33d75575855(partition)  >_Node_0 Instance  
+d.You will see the endpoint in the address section click on that address to run your app
+
+
+
+
+
+
