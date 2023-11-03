@@ -1,0 +1,65 @@
+Practical no 11
+
+Create AWS Lambda Function
+
+Create  AWS Lambda function:
+To create a Lambda function with the console
+
+Step 1:
+Open the Functions page on the Lambda console.
+
+Step 2:
+Choose Create function.
+
+
+
+Step 3:
+Under Basic information, do the following:
+
+a.For Function name, enter mypractcad11
+
+b.For Runtime, confirm that  python 3.8  is selected.
+
+
+
+
+Step 4:
+
+Choose Create function
+. 
+Step 5:
+Lambda creates a python3.8 function and an execution role that grants the function permission to upload logs. The Lambda function assumes the execution role when you invoke your function, and uses the execution role to create credentials for the AWS SDK and to read data from event sources.
+
+
+Step 5:
+Use the designer: For Create the S3 Bucket
+
+Step 6:
+Search for s3 Bucket and click on Create bucket.
+
+Step 7: provide bucket name
+Step 8:
+Search for IAM- Identity and Access Management
+
+Click  on Roles leftside & selected Function which created earlier
+Step 9:
+Give permission to that function   “AmazonS3FullAccess” if we will not give that acces it’s shows an error
+Step 10:
+  Type our Code in Lambda.py console
+import json
+import boto3
+s3 = boto3.client('s3')
+def lambda_handler(event, context):
+	bucket ='vikascollegedemo'
+	transactionToUpload = {}
+	transactionToUpload['transactionId'] = '12345'
+	transactionToUpload['type'] = 'PURCHASE'
+	transactionToUpload['amount'] = 20
+	transactionToUpload['customerID'] = 'CID-11111'
+	filename = 'CID-11111' + '.json'
+	uploadByteStream = bytes(json.dumps(transactionToUpload).encode('UTF-8'))
+	s3.put_object(Bucket=bucket, Key=filename, Body=uploadByteStream)
+	print('Put Completed')
+Step 11:
+After deploying SourceCode Click on “Test Button” and output will be shown
+

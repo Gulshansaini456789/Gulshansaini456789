@@ -1,0 +1,208 @@
+Practical No: 4
+
+Practical No.4A 
+Create an Azure Kubernetes Service Cluster 
+
+Steps – 
+1.Sign in Azure Portal (https://portal.azure.com/)
+2.Create Resource by clicking on Create Resource option.
+3.Select Kubernetes Services 
+4.Enter the subscription, resource group, kubernetes, Cluster name, Region, Kubernetes version,& DNS Name prefix
+5.Click on Review + Create Button 
+6.Click on Create Button
+
+Practical No.4B - Enable Azure Dev Space on an AKS Cluster 
+
+Steps – 
+1.Open Kubernetes Services
+2.Click on Dev Space
+3.Install Azure CLI
+4.Open CMD 
+5.Enter command AZ LOGIN
+6.Enter command 
+az aks use-dev-spaces –n CAD–g CAD
+7.Install Azure Dev Space
+
+Practical No.4C - Configure Visual Studio to work with an azure kubernetes services Cluster 
+
+Steps – 
+1.Install Visual Studio Enterprise 2017 
+2.Open Visual Studio 2017 >Tool > Extensions & Update
+3.Search for Kubernetes Services tool
+4.Click on Download 
+5.Close visual studio
+6.click on Modify(install kubernetes tool extension)
+7.Open Visual studio 
+8.Click on new project 
+9.Select Asp.net Core Web Application > click on Ok
+10.Select Model View Control > Click on OK
+11.Click On Down Arrow of IIS Express 
+12.We can see option of Azure Dev Space
+
+Practical No.4D - Configure Visual Studio Code to work with an azure kubernetes services Cluster 
+
+Steps – 
+1.Install visual studio code
+2.Open extension window 
+3.Search for Azure Dev Space
+4.Click Install
+5.Install Azure CLI (https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) 
+6.Open cmd 
+7.Enter command az Login
+8.Enter Command to install AZDS utility
+    az aks use-dev-spaces –n CAD –g CAD
+
+Practical No.4E - Deploy Application on AKS
+
+1.Core web API 
+
+Steps – 
+1.Open Visual Studio
+2.Click on New project
+3.Select Cloud Container Application for Kubernetes 
+4.Give Name of the application (Employee) & click on Ok
+5.Select API option & click on OK button
+
+6.Make sure Azure Dev Space is selected in menu.
+7.Open ValuesController.cs file
+8.Edit line number 16 as shown in the screen shot
+
+9.Save changes & press F5 button to run the application
+10.Select cluster name & space > click on OK button
+
+
+
+2.Node.js API
+
+Steps – 
+1.Create MYAPP folder 
+2.Open visual studio code
+3.Open folder MYAPP in visual studio code
+4.Create new file server.js & pacakge.json 
+5.From windows explorer create PUBLIC folder in MYAPP folder
+6.Now create new file using public folder by using visual studio code
+7.Create file index.html & app.css
+8.Open command palette from view menu (ctrl+shif+p)
+9.Enter azure dev space & click on it
+10.Click on configure
+11.Click DEBUG icon on left & then click on LAUNCH SERVER(AZDS)
+12.OUTPUT  will display in Output window
+
+Server.js
+var express = require('express');
+var app = express();
+app.use(express.static(__dirname + '/public'));
+app.get('/', function (req, res) {
+res.sendFile(__dirname + '/public/index.html');
+});
+app.get('/api', function (req, res) {
+res.send('Hello from webfrontend');
+});
+var port = process.env.PORT || 80;
+var server = app.listen(port, function () {
+console.log('Listening on port ' + port);
+});
+process.on("SIGINT", () => {
+process.exit(130 /* 128 + SIGINT */);
+});
+process.on("SIGTERM", () => {
+console.log("Terminating...");
+server.close();
+});
+
+Package.json
+{
+"name": "webfrontend",
+"version": "0.1.0",
+"devDependencies": {
+"nodemon": "^1.18.10"
+},
+"dependencies": {
+"express": "^4.16.2",
+"request": "2.83.0"
+},
+"main": "server.js",
+"scripts": {
+"start": "node server.js"
+}
+}
+
+Index.html
+<!doctype html>
+<html ng-app="myApp">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/
+angularjs/1.5.3/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/
+libs/angular.js/1.5.3/angular-route.js"></script>
+<script src="app.js"></script>
+<link rel="stylesheet" href="app.css">
+<link href="https://maxcdn.bootstrapcdn.
+com/bootstrap/3.3.6/css/bootstrap.min.css"
+rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au
++a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+crossorigin="anonymous">
+<!-- Uncomment the next line -->
+<!-- <meta name="viewport" content="width=devicewidth,
+initial-scale=1"> -->
+</head>
+<body style="margin-left:10px; margin-right:10px;">
+<div ng-controller="MainController">
+<h2>Server Says</h2>
+<div class="row">
+<div class="col-xs-8 col-md-10">
+<div ng-repeat="message in messages
+track by $index">
+<span class="message">{{message}}</
+span>
+</div>
+</div>
+<div class="col-xs-4 col-md-2">
+<button class="btn btn-primary"
+ng-click="
+sayHelloToServer()">Say It
+Again</button>
+</div>
+</div>
+</div>
+</body>
+</html> 
+
+APP.css
+.message {
+font-family: Courier New, Courier, monospace;
+font-weight: bold;
+} 
+
+
+
+
+
+OUTPUT
+
+The Debug console shows the log output.
+
+> Executing task: C:\Program Files\Microsoft SDKs\Azure\Azure
+Dev Spaces CLI (Preview)\azds.exe up --port=50521:9229 --await-exec
+--keep-alive <
+Synchronizing files...4s
+Using dev space 'new01' with target 'kuber01'
+Installing Helm chart...2s
+Waiting for container image build...29s
+Building container image...
+Step 1/8 : FROM node:lts 
+Step 2/8 : ENV PORT 80
+Step 3/8 : EXPOSE 80
+Step 4/8 : WORKDIR /app
+Step 5/8 : COPY package.json .
+Step 6/8 : RUN npm install
+Step 7/8 : COPY . .
+Step 8/8 : CMD ["npm", "start"]
+Built container image in 45s
+Waiting for container...52s
+Service 'myapp' port 80 (http) is available via port forwarding 
+at http://localhost:50764
+Terminal will be reused by tasks, press any key to close it. 
+
+                                            
+
