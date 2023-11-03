@@ -1,0 +1,48 @@
+Practical no 10
+Create a serverless API using Azure functions
+
+
+Azure Functions is a cloud service available on-demand that provides all the continually-updated infrastructure and resources needed to run your applications.
+You focus on the pieces of code that matter most to you, and Azure Functions handles the rest.
+
+Serverless = LESS Server (Your code will not run 24/7) Azure will take the code for API and save it to file.
+It will not run until it gets triggered, i.e., Server will not work until someone
+is really using it.
+
+Azure has many serverless offerings, like Azure Functions, Logic Apps, Azure Storage, Cloud messaging (Event Grid), Azure bot Services two major serverless offerings, Azure Functions and Logic Apps but as per current trend and market demand, we will be exploring Azure Functions and Logic Apps. 
+
+Azure Functions is a FaaS offering—developers can write custom logic based on available triggers and execute the logic. Logic Apps is a BaaS offering where different actions and workflow conditions are available to execute a logic based on an event trigger. Both Azure Functions and Logic Apps support HTTP events, meaning both can act as standalone APIs.
+
+
+
+
+
+Please see below steps and screenshots to create serverless API using Azure function:
+Go to Azure Portal:
+Home - Microsoft Azure
+Sign in with your Microsoft account to access various Azure functionalities
+
+After Successful sing in, Click on Function app  Click on Create Function App
+
+Click on Resource Group  Create New
+Resource Group Name: CAD10_Practical
+
+Function App Name: CAD10_Practical_gulshan
+Runtime stack: .NET Core
+Version 3.1
+Region: Central US
+
+Click on Review and Create:
+
+After review, click on Create
+Deployment will automatically start, please wait for it.
+Once the Deployment is complete, Click on Go to resource:
+Click on Functions  Add 
+Click on HTTP Trigger and then click on Add:
+Once the HTTP Trigger get created, you will see all the details about it.
+Click on Code + Test, and update it as required
+Kindly copy the Function URL, and visit Workspaces (postman.co)
+Paste the URL Link in “GET” to trigger our server less API:
+
+Click on Send:
+We will see our API being executed:
