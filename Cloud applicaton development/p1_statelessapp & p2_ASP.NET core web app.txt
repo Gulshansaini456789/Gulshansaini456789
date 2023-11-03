@@ -1,0 +1,34 @@
+p1 - stateless app
+
+step1 - Select ASP.NET Core Web APP
+step2 - Give name to the project
+step3 - Select .net 6.0 framework
+step4 -  Click on run
+step5 - you will see cmd prompt with web app address
+step6 -  you will see output in browser
+
+
+
+
+p2 -  Create an ASP.NET Core Web API and configure monitoring
+
+step1 -  Go to portal.azure.com
+step2 -  Click on the create a resource
+step3 - select App service plan in search box
+step4 - click on create
+step5 - clcik on create new on create app service plan page
+step6 - give a name and click ok
+step7 - enter app service paln details like name, select windows and select brazil south in region and then click on next:Tags button
+step8 - click on Review + create button
+step9 - click on create
+step10 - your deployment is complete screen will display
+
+step11 - open visual studio, click on new project
+step12 - select web application(model-view-controller)
+step13 - right click on project and click on publish
+step14 - select app service and create new nad then click publish
+step15 - provide a name to app nd click create
+
+
+
+

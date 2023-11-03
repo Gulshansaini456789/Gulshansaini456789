@@ -1,0 +1,62 @@
+p3 - Creating AKS Cluster
+
+step1 - open microsoft Azure
+step2 - click on create new resource
+step3 - search kubernetes services in search box
+step4 - In basics select resource group as (new) aksdemo-rg, In kubernetes cluster name select aksapp-cluster and in region select (asia pasific) south India, select option 99.9% 
+step5 - In primary node pool select autoscale in scale method 
+step6 - In networking select Azure CNI in netwrok configuration and click next:Integrations
+step7 - click on review+create and then click on create
+step8 - your deployment is coplete page will display on that page click on go to resource
+step9 - After clicking on go to resource click on connect
+step10 - After clicking on connect, connect to aksapp-cluster page will open In that click on open cloud shell or the azure cli
+step11 - Cloud shell will get open 
+step12 - fire the following comands
+Kubect1 create deployment aksdemo ==image mcr.microsoft.com/azuredocs/aci-helloworld:latest --replicas=1
+kubect1 get deployment
+kubect1 get deployments
+kubect1 get pods
+kubect1 expose deployment aksdemo --type=LoadBalancer --port=80 --target-port=80
+Step13 - To view the application: minimize the power shell and go to the home and search the kubernetes
+step14 - Then click on frontend IP configuration on home page of kubernetes
+step15 - copy the IP address of 2nd link and paste it in browser and run
+step16 - output will come as Welcoe to Azure Container Instances!
+
+
+
+
+p4 - Create a database design for Microservices an application using the database.
+
+1 - open microsoft Azure
+2 - click on sql database
+3 - click on createsql database
+4 - In project details click on create new
+5 - provide server name as guludbtest, region as(US) East US2, In Authentication method select use sql authentication and also provide sever admin login name as gulshan77189 and passowrd and click on ok
+6 - In database details provide database name server as guludb, server name as (new)guludbtest(East US 2, select option no for want to use sql elastic pool, In backup storage redundancy select Geo-redundant storage then in compute+storage click on configure database
+7 -  After clicking on configure datbase select basic(For less demanding workload)in search box
+8 - Then in additional settings in use existing data select sample
+9 - then click on review+create and finally click on create
+10 - your deployment is coplete screen will display
+11- click on go to resource on your deployment is coplete page
+12 - search query editor(preview) in search box
+13 - provide login id (gulshan77189) and passowrd and clcik ok, by clicking on ok it will not get login 
+14 -so for that click on  set server firewall in overview
+15 - In that in public access select selected network option
+16 - then click on +Add your client ipv4 address(49.36.105.32)
+and provied rule name as clientIpaddress 2022-11-8-23-2-27, start ipv4 address as 49.36.105.32 and end ipv4 address as 49.36.105.32
+and click on save
+17  again saerch database gugludb and provide login id (gulshan77189) and password and click on ok
+18 - copy the server name link
+19 - open microsoft sql server manageent studio 18
+20 - past the server name link provide login id and password and click on connect
+21- fire the command select*from SalesLT Customer
+
+
+
+
+
+
+
+
+
+
