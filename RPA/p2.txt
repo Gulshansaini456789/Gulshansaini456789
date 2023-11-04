@@ -1,0 +1,36 @@
+p2a - AIM : Automate UiPath Number Calculation (Subtraction, Multiplication, Division of 
+numbers). 
+Steps:
+1. Create a new sequence.
+2. In the sequence, drag and drop an assign box to assign a variable. Assign a variable 
+“a” with value 10.
+3. On the variables tab, create the variable and assign the variable type as Int32.
+4. Repeat steps 2 and 3 to create another variable “b” of integer type and give it the 
+value 15.
+5. Add a third assign box and create a variable “result” that will store the value of the 
+operation between a and b. (a+b). This variable will also be integer.
+6. Once done, drag and drop a write line box and add: “Addition is” + result since the 
+output will be in string format.
+7. Repeat steps from 5 and 6 thrice and change the operation as result=a-b, result=a*b, 
+result=a/b.
+8. Run the automation
+
+
+
+p2b - AIM :An automation UiPath project using different types of variables (number, datetime, 
+Boolean, generic, array, data table)
+STEPS :
+To create array
+1. Create a new sequence.
+2. Drag and drop multiple assign activity.
+3. Create an array variable a where,
+ marks = new int[5]{99,100,50,22,98}
+4. Once done, go to variable option and change the data type of the array to array of [T]. 
+Click on the option and select the array type as int 32.
+5. Create another variable i=0 where i will be the iteration.
+6. Drag and drop while activity. In the condition part add i<5
+7. In the body drag and drop writeline and add marks[i].ToString() to display the array
+8. Finally drag and drop a new assign and add i=i+1 to increase the iteration by 1. This 
+will display all the members of the array.
+9. Run the automation and check the output.
+

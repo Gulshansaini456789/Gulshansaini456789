@@ -1,0 +1,160 @@
+p9a - AIM : Automate the process of send mail event (on any email). 
+STEPS : 
+Email triggers are the foundation of any email automation process. In the 
+attached Mail_Trigger_Sample Workflow, the Inbox is checked every 60 seconds for fresh emails.
+If a new email is detected and a certain condition is met (a specific Keyword is found in the Subject),
+then the message Body is passed as an argument to the Process_Email Workflow
+Workflow Steps:
+1. Before running the Mail_Trigger_Sample workflow, you will need to set:
+Email address
+password
+keyword
+Also, please make sure you set your MailFolder, Port, and Server in 
+the GetIMAPMailMessages activity properties. By default, the Workflow is configured to work 
+with the Gmail settings
+2. When the Workflow is running, it checks your email for new messages 
+(using the GetIMAPMailMessages activity). If no new email is found, it waits for 60 seconds and 
+then it tries again. You can change the waiting time to other value, within the Delay activity
+3. If a new email is found, it is marked as read (you can change that by un-checking 
+the MarkAsRead property in the GetIMAPMailMessages activity)
+4. The Workflow then checks if the email's subject contains the keyword. If there's a match, 
+the Process_Email Workflow is invoked and the email body is passed as an argument ( Body )
+5. The Process_Email Workflow will pop up a window with the message body.
+Note: The workflows are created & tested with UiPath Studio 8.
+Attachments:
+Mail_Trigger_Sample.xaml
+Process_Email.xam
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+p9b - AIM : Automate the process of launching an assistant bot on a keyboard event. 
+STEPS :
+1.Drag and drop the Monitor events activity: In this step, we will just drag and
+drop the Monitor events activity into the workflow
+2. Drag the Hotkey trigger activity: In the next step, we will use the Hotkey trigger
+activity for the user to start the automation process. Assign Alt + W to the hotkey
+so that, when the user presses this hotkey, the event will be executed:
+3. Open Notepad and type into it: Our final step is to record the sequence of the
+steps to be performed. In this case, this is to open Notepad and then type into it.
+For that just use the help of the Desktop recorder. First, we double-click on the
+Notepad application in the window as shown in the screenshot. Select the
+ClickType as CLICK_DOUBLE from the Properties panel: After that, we record the typing action and 
+close the Notepad window. Then click on Do not Save because you do not want to save your file. The 
+sequence is shown in the following screenshot:
+
+
+
+
+
+
+
+
+
+
+9c - AIM : Demonstrate the Exception handing in UiPath 
+STEPS :
+1. Drag and drop the Try catch activity: Create a blank project. Drag and drop
+the Flowchart activity into the Designer panel. Search for the Try catch activity in
+the Activities panel and drag it into the Flowchart. Set it as the Start node:
+2. Try: When we double-click on the Try catch activity, dragged and dropped inside
+the workspace, space for the Try activity appears
+3. Catches: Inside the Catches activity, first we have to click on Add new Catch and
+then click on Add Exception option, from which we have to select the type of
+exception. In most cases, System.Exception is preferred. The following
+screenshot shows the types of exception. There are many more exceptions which
+can be viewed by clicking on the Browse for Types option:
+4.Say the execution fails: for example, the Click activity is unable to be executed
+because of the unavailability of a UI element. In such a case, we can use the
+Catches block in order to either view the error that has occurred or for an
+alternative method to be used if that particular error occurs. As shown in the
+following screenshot, we will drop the activity in the Catches block. To print a
+message, we use a Message box:
+5. When we click on Add new catch, we are asked to select the type of exception. We
+have selected System.Exception. Now inside the exception block, we have
+dropped a Message box activity. Entering ������������������ will display the
+error that occurred during execution
+6. Finally: When we have defined the exception for our sequence, the Finally block
+will always work, regardless of whether the execution was successful or not.
+Suppose we want to display a message to the user notifying that the process is
+complete. To make sure that the whole Try catch activity is executed, we will just
+drop a Message box activity in the area provided in the Finally block
+
+
+
+
+
+
+
+
+
+9d - AIM : Demonstrate the use of config files in UiPath 
+THEORY :
+When it comes to configuration, UiPath does not have any pre-built configuration file such
+as Visual Studio, but we can create one. It is considered to be one of the best practices to
+keep environment settings in a config file so that they can be easily changed by the user
+when required. Thus, when we create a project, the ������������ file that holds all the
+activities is created automatically. ������������ can be found in the folder where the
+project is saved. To access the folder, we can just open the Project, then copy the path (as
+shown in the following screenshot), and paste it into File Explorer:
+STEPS :
+You can also store your settings with the help of a spreadsheet or credentials. There are
+various parameters contained in the ������������ file. They are:
+Name: This is the title of the project that is provided when creating a project in
+the create New Project window:
+Description: When creating a project, a description is also required. You can add
+the description in the Create New Project window, as shown in the preceding
+screenshot.
+Managing and Maintaining the Code Chapter 9
+Main: This is the entry point for the project. It is saved as �������� by default,
+but you can change its name from the Project panel. Also, you have multiple
+workflows for a project, it is necessary to attach all these files to the main file with
+the Invoke Workflow File activity. Otherwise, those files will not be executed:
+Dependencies: These are the activities packages that are used in a project and
+their versions.
+Excluded data: Contains keyword that can be added to the name of an activity to
+prevent the variable and argument values from being logged at the verbose level.
+Tool version: The version of Studio used to create a project.
+Managing and Maintaining the Code Chapter 9
+Adding Credential: We can add particular settings that can be used further. For
+example, we can save the username and password to be used further, so this can
+be done with the help of the Add credential activity that can be found in the
+Activities panel, as shown in the following screenshot:
+After adding credentials, type the required values in the Properties panel, as
+shown in the following screenshot:
+Managing and Maintaining the Code Chapter 9
+So, when the credentials are set, we can delete, secure, or request credentials, as shown in
+the following steps:
+1. Delete Credentials: If we want to delete a credential then we can just drag and
+drop the Delete Credentials activity and then define the target for the credential:
+Managing and Maintaining the Code Chapter 9
+2. Get Secure Credential: This is used to get the values, that is, the username and
+password, that were set during the addition of a credential. We have to set the
+target the same as before; the output will be the username and password:
+3. Request Credential: This is a property in which the robot displays a message
+dialog asking the user for username and password and stores this information as
+a string. This can then be used in further processes. The user can select OK to
+provide credentials or even cancel it if they do not want to provide credentials.
+
+
+
+
+
+
+
+
+
+
+

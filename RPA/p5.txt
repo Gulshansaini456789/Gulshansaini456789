@@ -1,0 +1,26 @@
+p5a - AIM : Consider an array of names. We have to find out how many of them start with the 
+letter "a". Create an automation where the number of names starting with "a" is counted and 
+the result is displayed. 
+Steps: 
+1. Create a new sequence.
+2. Drag and drop multiple assign activity
+3. Create a string array and add the names you wish to add 
+Names=New String[5]{“Aman”,”Ajay”,”Omkar”,”Ashish”,”Tejas”}
+4. Once the array is created, go to the variable tab and change the data type of the array to 
+Array of [T] and select the datatype as string.
+5. Once array is created, create a new variable i=0 for iteration and count=0 and select the 
+datatype as Int32 for both the variables.
+6. Once done, Drag and drop a while activity from activities panel.
+7. Add condition as i<5 
+8. In the body panel of the while activity, drag and drop an if activity
+9. Add the following condition in the if activity:
+Names[i].StartsWith(“A”)
+10. Drag and drop an assign activity in the “then” panel of the if activity and add 
+Count=count+1(This will increase the counter by 1 if the condition is true)
+11. After the else panel in the if activity, drag and drop an assign activity and add 
+i=i+1
+12. Outside the while loop in the main sequence, drag and drop writeline activity and add:
+Count.ToString().
+13. Run the automation and check the output
+
+

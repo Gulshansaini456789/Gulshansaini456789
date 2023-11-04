@@ -1,0 +1,123 @@
+p7a - AIM : Implement the attach window activity. 
+Attach Window
+SUGGEST EDITS
+UiPath.Core.Activities.WindowScope
+A container that enables you to attach to an already opened window and perform multiple actions 
+within it. This activity is also automatically generated when using the Desktop recorder.
+Properties
+Input
+ Selector - Text property used to find a particular UI element when the activity is executed. It is 
+actually a XML fragment specifying attributes of the GUI element you are looking for and of 
+some of its parents. If both this property and the Window property are configured, 
+the Selector property is used at design time, and the Window property is used at runtime.
+ Window - The window to attach to. This field accepts only Window variables. If both this 
+property and the Selector property are configured, the Selector property is used at design time, 
+and the Window property is used at runtime.
+Options
+ SearchScope - The application window in which to search for the UI element defined by the 
+Selector property.
+Common
+ DisplayName - The display name of the activity.
+ TimeoutMS - Specifies the amount of time (in milliseconds) to wait for the activity to run before 
+an error is thrown. The default value is 30000 milliseconds (30 seconds).
+ ContinueOnError - Specifies if the automation should continue even when the activity throws 
+an error. This field only supports Boolean values (True, False). The default value is False. As a 
+result, if the field is blank and an error is thrown, the execution of the project stops. If the value is 
+set to True, the execution of the project continues regardless of any error.
+
+
+
+
+
+
+
+p7b - AIM : Find different controls using UiPath 
+STEPS :
+1. Open Studio and create a new Process.
+2. Drag a Sequence container in the Workflow Designer.
+o Create the following variable:
+Variable Name Variable Type Default Value
+EditElement UiPath.Core.UiElement -
+FormatElement UiPath.Core.UiElement -
+3. Drag an OpenApplication activity inside the Sequence container.
+4. Drag a Find Element activity below the OpenApplication activity. 
+o In the Properties panel, select the COMPLETE option from 
+the WaitForReady drop-down list.
+o Add the variable EditElement in the FoundElement field.
+5. Place a Find Relative activity below the Find Element activity.
+o In the Properties panel, add the value 20 in the OffsetX field.
+o Select the option TopRight from the Position drop-down list.
+o Add the variable EditElement in the Element field.
+o Add the variable FormatElement in the RelativeElement field.
+6. Place a Click activity below the Find Relative activity.
+o In the Properties panel, add the variable FormatElement in the Element field.
+o Select the None option from the KeyModifiers drop-down list.
+7. Place another Click activity below the first Click activity.
+o Inside the activity, click the Indicate on screen option. The GIF below shows all the 
+steps you need to follow:
+Drag an Activate activity below the Click activity.
+ Inside the activity, click the Indicate on screen option. The GIF below shows all the steps 
+you need to follow:
+Place a Set Focus activity below the Activate activity.
+ Inside the activity, click the Indicate on screen option, and select the Size menu option. The 
+GIF below shows all the steps you need to follow:
+4. Drag a Send Hotkey activity below the Set Focus activity.
+ In the Key field, type the value down.
+ In the Properties panel, select the check box for the Activate option. This option brings the 
+UI element to the foreground and activates it before the text is written.
+ Select the None option from the KeyModifiers drop-down list.
+ Select the check box for the SpecialKey option. This indicates that you are using a special 
+key in the keyboard shortcut.
+11. Place a Click activity below the Send Hotkey activity.
+ Inside the activity, click the Indicate on screen option. The GIF below shows all the steps 
+you need to follow:
+ Run the process. The automation opens a new Notepad file, navigates through the 
+menu
+
+
+
+
+
+
+
+
+
+
+
+p7c - AIM : Demonstrate the following activities in UiPath: 
+i.MOUSE
+UiPath Studio features activities that simulate any type of keyboard or mouse input that a human would 
+use. Also, there are activities that can set focus to a certain window, minimize or maximize it, or perform 
+any other kind of action on it. These activities are essential in creating an automation that simulates human 
+behaviour. As explained here, there are several technologies that can be used for these activities, each with 
+their own advantages in certain situations.
+Double Click, Click, Hover are activities that simulate the clicking or hovering of UI elements. These 
+activities are very useful in situations when human behavior must be mimicked. As input, these activities 
+receive a Target, which can be either a Region variable, a UIElement variable or a selector, that helps you 
+identify what you want to automate and where the actions must be performed. The target can also be 
+automatically generated by using the Indicate on Screen functionality, which tries to identify UI elements 
+in the indicated region, and generates selectors for them. If this does not work for you, then manual 
+intervention might be required.
+ii.Type Into
+Type Into sends keystrokes to a UI element. Special keys are supported and can be selected from the dropdown list. This is a basic text input activity that is widely used in automations and is also generated by the 
+automatic recording wizards. As input, this activity receives a string or a string variable that contains the 
+text to be written, and a Target, which can be either a Region variable, a UIElement variable or a selector, 
+that helps you identify what you want to automate and where the actions must be performed. The target 
+can also be automatically generated by using the Indicate on Screen functionality, which tries to identify 
+UI elements in the indicated region, and generates selectors for them. If this does not work for you, then 
+manual intervention might be required.
+iii. Type Secure text 
+Type Secure Text sends a secure string to a UI element. As input, this activity receives a SecureString 
+variable that contains the text to be written, and a Target, which can be either a Region variable, a 
+UIElement variable or a selector, that helps you identify what you want to automate and where the actions 
+must be performed. The target can also be automatically generated by using the Indicate on 
+Screen functionality, which tries to identify UI elements in the indicated region, and generates selectors 
+for them. If this does not work for you, then manual intervention might be required. This activity is useful 
+for secure automations, as it can use passwords that are stored in SecureString variables. Usually, the 
+SecureString variable is supplied by a Get Secure Credential activity.
+
+
+
+
+
+

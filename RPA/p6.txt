@@ -1,0 +1,36 @@
+p6a - AIM : Create an application automating the read, write and append operation on excel file. 
+Steps: 
+1. Create a new sequence.
+2. Create a excel file and add 2 columns of data
+3. Drag and drop Excel application scope from the activities panel
+4. In the application scope, browse the excel file in the system and add the path of the file.
+5. In the DO panel of the excel application scope, Drag and drop read cell activity.
+6. It will automatically take the sheet as “Sheet1” and cell as “A1” as the initial point .
+7. Right click on the “Sheet1” and select create variable and add a variable as name and 
+add any cell number you want to print.
+8. Drag and drop a Writeline activity and add : “Name:”+name
+9. Run the automation and check the output.
+
+
+
+
+p6b - AIM : Automate the process to extract data from an excel file into a data table and vice versa 
+Steps:
+1. Create a new sequence.
+2. Create a excel file and keep the file empty
+3. Drag and drop Excel application scope from the activities panel
+4. In the application scope, browse the excel file in the system and add the path of the file.
+5. Drag and drop Build data table activity and add a datatable and click on create option
+6. On the right side of the page, right click on the output option and create a variable 
+“mytable”
+7. In the DO panel of the excel application scope, Drag and drop append range / write 
+range activity.
+8. It will automatically take the sheet as “Sheet1” and cell as “A1” as the initial point if 
+you use write range.
+9. It will also give a text box to enter the data you wish to write in the excel file. Add the 
+variable name as mytable.
+10. Run the automation and check the output.
+
+
+
+

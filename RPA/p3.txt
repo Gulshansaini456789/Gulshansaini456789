@@ -1,0 +1,47 @@
+p3a - AIM : An automation UiPath Project using decision statements. 
+Theory:
+The If activity contains a statement and two conditions. The first condition (the activity in the 
+Then section) is executed if the statement is true, while the second one (the activity in the 
+optional Else section) is executed if the statement is false.
+If activities can be useful to make decisions based on the value of variables.
+STEPS:
+1. Create a new sequence.
+2. Drag and drop multiple assign activity.
+3. Create an array variable a where,
+marks = new int[5]{99,100,50,22,98}
+4. Once done, go to variable option and change the data type of the array to array of [T]. 
+Click on the option and select the array type as int 32.
+5. Create another variable i=0 where I will be the iteration.
+6. Drag and drop while activity. In the condition part add i<5
+7. In the body of the while activity, drag and drop the if activity and add the condition:
+Marks[i]>50
+8. In the “then” panel drag and drop writeline activity and add marks[i].ToString() to 
+display the array
+9. Finally drag and drop a new assign outside the if activity and add i=i+1 to increase the 
+iteration by 1. This will display all the members of the array.
+10. Run the automation and check the output
+
+
+
+
+
+
+p3b - AIM : An automation UiPath Project using looping statements. 
+STEPS :
+For-each activity
+1. Create a new sequence.
+2. Drag and drop assign activity.
+3. Create an array variable marks where,
+a. marks = new int[5]{99,100,50,22,98}
+4. Once done, go to variable option and change the data type of the array to array of [T]. 
+Click on the option and select the array type as int 32.
+5. Drag and drop for each activity.
+6. In the ForEach activity add the following statements:
+ In “for each” field add item 
+ Add marks in “In” field
+7. In the body drag and drop writeline and add item.ToString() to display the array
+8. Run the automation and check the output.
+
+
+
+
