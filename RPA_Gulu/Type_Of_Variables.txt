@@ -1,0 +1,66 @@
+AIM :An automation UiPath project using different types of variables (number, datetime, 
+Boolean, generic, array, data table)
+
+open uipath studio
+click on process and give the name to process and then click on create
+click on new sequence
+In variable tab create variable Int with datatype int32 and give values
+, boolean with boolean and give value, array with array and value, genericvalue with datatype generivicvalue, 
+datetime and data
+
+In sequence take one data table and values 
+click on datatable and output of properties click on + select variable data
+add for each for data table give the name data and 3rd textbox give gulshan("values").ToString
+then gor int, boolean, datetime and generic value take message box and type :"Intege value:"+Int.Tostring
+do the same for boolean, datetime and genericvalue also
+for array take for each loop 
+in that in first text box tupe array
+in 3rd textbox type currentItem.ToString
+and then run
+
+
+
+
+
+AIM: Number calculation
+create process
+take sequence
+in Sequence take 2 inputbox
+In input box in 1st text box add"calculation"
+in 2nd textbox type"FirstNumber"
+do the same for 2nd input box
+click variables and add 2 variables
+firstNum datatype int32
+secondNum datatype int32
+click on 1st inputbox and on righthand side in result click on + sign and select vaiables -> firstNum
+do the same for 2nd inputbox
+take 4 message box for, add, sub, mult, divi
+in message box type
+"Addition:"+" "+(firstNum+secondNum).ToString
+do the same for sub, mult, and did
+then click on debug
+
+
+
+
+AIM :  An UiPath Robot which can empty a folder in Gmail solely on basis of recording. 
+open gmail
+then open uipath studio
+then click on recordweb
+click on search box of mail
+then type in:tarsh
+then click enter
+then select one option and then click on delete forever
+then save
+
+
+
+Aim :An automation UiPath Project using looping statements.
+take a sequence
+In variables tab 
+give the name marks and datatype array int32 and in value give the arrays list{99,100,50,22,98}
+In sequence drag and drop for each loop 
+in that in 1st textbox select marks by selecting from variables by clicking on+
+in 3rd box
+type "marks are:"+currentItem.ToString
+then debug
