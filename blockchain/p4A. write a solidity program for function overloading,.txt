@@ -1,0 +1,349 @@
+Practical 4
+A. write a solidity program for function overloading, mathematical function & 
+cryptographic functions
+Function Overloading:
+The definition of the function must differ from each other by the types and/or the number of arguments 
+in the argument list. You cannot overload function declarations that differ only by return type.
+pragma solidity ^0.5.0;
+contract Test {
+function getSum(uint a, uint b) public pure returns(uint){
+return a + b;
+}
+function getSum(uint a, uint b, uint c ) public pure returns(uint){
+return a + b + c;
+}
+function callSumWithTwoArguments() public pure returns(uint){
+return getSum(2,2);
+}
+function callSumWithThreeArguments() public pure returns(uint){
+return getSum(1,2,4);
+}
+}
+Mathematical Function:
+Solidity provides inbuilt mathematical functions as well.
+pragma solidity ^0.5.0;
+contract Test {
+function callAddMod() public pure returns(uint){
+return addmod(4, 5, 3);
+}
+function callMulMod() public pure returns(uint){
+return mulmod(4, 5, 3);
+}
+}
+Cryptographic Function:
+Solidity provides inbuilt cryptographic functions as well.
+pragma solidity ^0.5.0;
+contract Test {
+function callKeccak256() public pure returns(bytes32 result){
+return keccak256("ABC");
+}
+}
+
+
+
+
+
+
+4B. WRITE A SOLIDITY PROGRAM FOR CONTRACT, INHERITANCE, CONSTRUCTORS, ABSTRACT 
+CONTRACTS, INTERFACES, LIBRARIES, ASSEMBLY, EVENTS, ERROR HANDLING.
+A)Contract:
+Contract in Solidity is similar to a Class in C++. A Contract have following properties.
+Constructor − A special function declared with constructor keyword which will be executed once 
+per contract and is invoked when a contract is created.
+State Variables − Variables per Contract to store the state of the contract.
+Functions − Functions per Contract which can modify the state variables to alter the state of a 
+contract.
+// Calling function from external contract
+pragma solidity ^0.5.0;
+contract C {
+//private state variable
+uint private data;
+//public state variable
+uint public info;
+//constructor
+constructor() public {
+info = 10;
+}
+//private function
+function increment(uint a) private pure returns(uint) { return a + 1; }
+//public function
+function updateData(uint a) public { data = a; }
+function getData() public view returns(uint) { return data; }
+function compute(uint a, uint b) internal pure returns (uint) { return a + b; }
+}
+//Derived Contract
+contract E is C {
+uint private result;
+C private c;
+constructor() public {
+c = new C();
+}
+function getComputedResult() public {
+result = compute(3, 5);
+}
+function getResult() public view returns(uint) { return result; }
+function getData() public view returns(uint) { return c.info(); }
+}
+B)Inheritance:
+Inheritance is a way to extend functionality of a contract. Solidity supports both single as well as multiple 
+inheritance.
+// Solidity program to
+// demonstrate
+// Single Inheritance
+pragma solidity >=0.4.22 <0.6.0;
+// Defining contract
+contract parent{
+// Declaring internal
+// state variable
+uint internal sum;
+// Defining external function
+// to set value of internal
+// state variable sum
+function setValue() external {
+uint a = 20;
+uint b = 20;
+sum = a + b;
+}
+}
+// Defining child contract
+contract child is parent{
+// Defining external function
+// to return value of
+// internal state variable sum
+function getValue() external view returns(uint) {
+return sum;
+}
+}
+// Defining calling contract
+contract caller {
+// Creating child contract object
+child cc = new child();
+// Defining function to call
+// setValue and getValue functions
+function testInheritance() public {
+cc.setValue();
+}
+function result() public view returns(uint ){
+return cc.getValue();
+}
+}
+C)Constructors:
+Constructor is a special function declared using constructor keyword. It is an optional function and is 
+used to initialize state variables of a contract. Following are the key characteristics of a constructor.
+A contract can have only one constructor.
+A constructor code is executed once when a contract is created and it is used to initialize contract state.
+A constructor can be either public or internal.
+An internal constructor marks the contract as abstract.
+In case, no constructor is defined, a default constructor is present in the contract.
+pragma solidity ^0.5.0;
+contract Base {
+uint data;
+constructor(uint _data) public {
+data = _data;
+}
+function getresult()public view returns(uint){
+return data;
+}
+}
+contract Derived is Base (5) {
+constructor() public {}
+}
+// Indirect Initialization of Base Constructor
+pragma solidity ^0.5.0;
+contract Base {
+uint data;
+constructor(uint _data) public {
+data = _data;
+}
+function getresult()public view returns(uint){
+return data;
+}
+}
+contract Derived is Base {
+constructor(uint _info) Base(_info * _info) public {}
+}
+D)Abstract Contracts:
+Abstract Contract is one which contains at least one function without any implementation. Such a 
+contract is used as a base contract. Generally an abstract contract contains both implemented as well as 
+abstract functions. Derived contract will implement the abstract function and use the existing functions 
+as and when required.
+pragma solidity ^0.5.0;
+contract Calculator {
+function getResult() public view returns(uint);
+}
+contract Test is Calculator {
+function getResult() public view returns(uint) {
+uint a = 4;
+uint b = 2;
+uint result = a + b;
+return result;
+}
+}
+E)Interfaces:
+Interfaces are similar to abstract contracts and are created using interface keyword. Following are the 
+key characteristics of an interface.
+Interface can not have any function with implementation.
+Functions of an interface can be only of type external.
+Interface can not have constructor.
+Interface can not have state variables.
+pragma solidity ^0.5.0;
+interface Calculator {
+function getResult() external view returns(uint);
+}
+contract Test is Calculator {
+constructor() public {}
+function getResult() external view returns(uint){
+uint a = 5;
+uint b = 2;
+uint result = a + b;
+return result;
+}
+}
+F)Libraries:
+Libraries are similar to Contracts but are mainly intended for reuse. A Library contains functions which 
+other contracts can call. Solidity have certain restrictions on use of a Library.
+pragma solidity ^0.5.0;
+library Search {
+function indexOf(uint[] storage self, uint value) public view returns (uint) {
+for (uint i = 0; i < self.length; i++)
+if (self[i] == value) return i;
+return uint(-1);}
+}
+contract Test {
+uint[] data;
+uint value;
+uint index;
+constructor() public {
+data.push(6);
+data.push(7);
+data.push(8);
+data.push(9);
+data.push(10);
+}
+function isValuePresent() external {
+value = 9;
+//search if value is present in the array using Library function
+index = Search.indexOf(data, value);
+}
+function getresult() public view returns(uint){
+return index;
+}}
+G)Assembly:
+Solidity provides an option to use assembly language to write inline assembly within Solidity source 
+code. We can also write a standalone assembly code which then be converted to bytecode. Standalone 
+Assembly is an intermediate language for a Solidity compiler and it converts the Solidity code into a 
+Standalone Assembly and then to byte code. We can used the same language used in Inline Assembly to 
+write code in a Standalone assembly.
+pragma solidity ^0.5.0;
+library Sum {
+function sumUsingInlineAssembly(uint[] memory _data) public pure returns (uint o_sum) {
+for (uint i = 0; i < _data.length; ++i) {
+assembly {
+o_sum := add(o_sum, mload(add(add(_data, 0x20), mul(i, 0x20))))
+}}
+}
+}
+contract Test {
+uint[] data;
+constructor() public {
+data.push(1);
+data.push(2);
+data.push(3);
+data.push(4);
+data.push(5);
+}
+function sum() external view returns(uint){
+return Sum.sumUsingInlineAssembly(data);
+}
+}
+H)Events:
+Event is an inheritable member of a contract. An event is emitted, it stores the arguments passed in 
+transaction logs. These logs are stored on blockchain and are accessible using address of the contract 
+till the contract is present on the blockchain. An event generated is not accessible from within contracts, 
+not even the one which have created and emitted them.
+// Solidity program to demonstrate
+// creating an event
+pragma solidity ^0.4.21;
+// Creating a contract
+contract eventExample {
+// Declaring state variables
+uint256 public value = 0;
+// Declaring an event
+event Increment(address owner);
+// Defining a function for logging event
+function getValue(uint _a, uint _b) public {
+emit Increment(msg.sender);
+value = _a + _b;
+}
+}
+I)Error Handling:
+Solidity provides various functions for error handling. Generally when an error occurs, the state is 
+reverted back to its original state. Other checks are to prevent unauthorized code access.
+Solidity program to demonstrate require statement.
+// Solidity program to
+// demonstrate require
+// statement
+pragma solidity ^0.5.0;
+// Creating a contract
+contract requireStatement {
+// Defining function to
+// check input
+function checkInput(uint8 _input) public view returns(string memory){
+require(_input >= 0, "invalid uint");
+require(_input <= 255, "invalid uint8");
+return "Input is Uint8";
+}
+// Defining function to
+// use require statement
+function Odd(uint _input) public view returns(bool){
+require(_input % 2 != 0);
+return true;
+}
+}
+Solidity program to demonstrate assert statement.
+// Solidity program to
+// demonstrate assert
+// statement
+pragma solidity ^0.5.0;
+// Creating a contract
+contract assertStatement {
+// Defining a state variable
+bool result;
+// Defining a function
+// to check condition
+function checkOverflow(uint8 _num1, uint8 _num2) public {
+uint8 sum = _num1 + _num2;
+assert(sum<=255);
+result = true;
+}
+// Defining a function to
+// print result of assert
+// statement
+function getResult() public view returns(string memory){
+if(result == true){
+return "No Overflow";
+}
+else{
+return "Overflow exist";
+}
+}
+}
+Solidity program to demonstrate revert statement.
+// Solidity program to
+// demonstrate revert
+pragma solidity ^0.5.0;
+// Creating a contract
+contract revertStatement {
+// Defining a function
+// to check condition
+function checkOverflow(uint _num1, uint _num2) public view returns(
+string memory, uint) {
+uint sum = _num1 + _num2;
+if(sum < 0 || sum > 255){
+revert(" Overflow Exist");
+}
+else{
+return ("No Overflow", sum);
+}
+}
+}

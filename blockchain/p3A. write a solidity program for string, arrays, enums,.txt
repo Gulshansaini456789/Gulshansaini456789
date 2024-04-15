@@ -1,0 +1,241 @@
+Practical 3
+AIM: write a solidity program for variables, operators, loops, decision making and string.
+A) String:
+Solidity supports String literal using both double quote (") and single quote ('). It provides string as a 
+data type to declare a variable of type String.(Int to str)
+pragma solidity ^0.5.0;
+contract SolidityTest {
+constructor() public{
+}
+function getResult() public view returns(string memory){
+uint a = 1;
+uint b = 2;
+uint result = a + b;
+return integerToString(result);
+}
+function integerToString(uint _i) internal pure
+returns (string memory) {
+if (_i == 0) {
+return "0";
+}
+uint j = _i;
+uint len;
+while (j != 0) {
+len++;
+j /= 10;
+}
+bytes memory bstr = new bytes(len);
+uint k = len - 1;
+while (_i != 0) {
+bstr[k--] = byte(uint8(48 + _i % 10));
+_i /= 10;
+}
+return string(bstr);
+}
+}
+B)Array:
+Array is a data structure, which stores a fixed-size sequential collection of elements of the same type. 
+An array is used to store a collection of data, but it is often more useful to think of an array as a collection 
+of variables of the same type.
+// Solidity program to demonstrate
+// accessing elements of an array
+pragma solidity ^0.5.0;
+// Creating a contract
+contract Types {
+// Declaring an array
+uint[6] data;
+uint x;
+// Defining function to
+// assign values to array
+function array_example() public returns (uint[6] memory)
+{
+data = [uint(10), 20, 30, 40, 50, 60];
+}
+function result() public view returns(uint[6] memory){
+return data;
+}
+// Defining function to access
+// values from the array
+// from a specific index
+function array_element() public view returns (uint){
+uint x = data[2];
+return x;
+}
+}
+C)Enums:
+Enums restrict a variable to have one of only a few predefined values. The values in this enumerated 
+list are called enums. With the use of enums it is possible to reduce the number of bugs in your code.
+// Solidity program to demonstrate
+// how to use 'enumerator'
+pragma solidity ^0.5.0;
+// Creating a contract
+contract Types {
+// Creating an enumerator
+enum week_days
+{
+Monday,
+Tuesday,
+Wednesday,
+Thursday,
+Friday,
+Saturday,
+Sunday
+}
+// Declaring variables of
+// type enumerator
+week_days week;
+week_days choice;
+// Setting a default value
+week_days constant default_value
+= week_days.Sunday;
+// Defining a function to
+// set value of choice
+function set_value() public {
+choice = week_days.Thursday;
+}
+// Defining a function to
+// return value of choice
+function get_choice(
+) public view returns (week_days) {
+return choice;
+}
+// Defining function to
+// return default value
+function getdefaultvalue(
+) public pure returns(week_days) {
+return default_value;
+}
+}
+D)Structure:
+Struct types are used to represent a record.
+pragma solidity ^0.5.0;
+contract test {
+struct Book {
+string title;
+string author;
+uint book_id;
+}
+Book book;
+function setBook() public {
+book = Book('Learn Java', 'TP', 1);
+}
+function getBookId() public view returns (uint) {
+return book.book_id;
+}
+}
+E)Mappings:
+Mapping is a reference type as arrays and structs. Following is the syntax to declare a mapping type.
+mapping(_KeyType => _ValueType) where ,
+_KeyType − can be any built-in types plus bytes and string. No reference type or complex objects are 
+allowed.
+_ValueType − can be any type.
+pragma solidity ^0.5.0;
+contract LedgerBalance {
+mapping(address => uint) balance;
+function updateBalance() public returns(uint) {
+balance[msg.sender]=30;
+return balance[msg.sender];
+}
+}
+Mapping program for String.
+pragma solidity ^0.5.0;
+contract LedgerBalance {
+mapping(address => string) name;
+function updateBalance() public returns(string memory){
+name[msg.sender] = "Mrunali";
+return name[msg.sender];
+}
+function printsender() public view returns(address) {
+return msg.sender;
+}
+}
+
+
+
+
+3B. WRITE A SOLIDITY PROGRAM FOR FUNCTION, VIEW FUNCTION, PURE
+FUNCTION & FALLBACK FUNCTION.
+A)Function:
+A function is a group of reusable code which can be called anywhere in your program. This eliminates 
+the need of writing the same code again and again. It helps programmers in writing modular codes. 
+Functions allow a programmer to divide a big program into a number of small and manageable 
+functions.
+pragma solidity ^0.5.0;
+contract SolidityTest {
+constructor() public{
+}
+function getResult() public view returns(string memory){
+uint a = 1;
+uint b = 2;
+uint result = a + b;
+return integerToString(result);
+}
+function integerToString(uint _i) internal pure
+returns (string memory) {
+if (_i == 0) {
+return "0";
+}
+uint j = _i;
+uint len;
+while (j != 0) {
+len++;
+j /= 10;
+}
+bytes memory bstr = new bytes(len);
+uint k = len - 1;
+while (_i != 0) {
+bstr[k--] = byte(uint8(48 + _i % 10));
+_i /= 10;
+}
+return string(bstr);//access local variable
+}
+}
+B)View Function:
+View functions ensure that they will not modify the state. A function can be declared as view. Getter 
+method are by default view functions.
+pragma solidity ^0.5.0;
+contract Test {
+function getResult() public view returns(uint product, uint sum){
+uint a = 1; // local variable
+uint b = 2;
+product = a * b;
+sum = a + b;
+}
+}
+C)Pure Function:
+Pure functions ensure that they not read or modify the state. A function can be declared as pure. Pure 
+functions can use the revert() and require() functions to revert potential state changes if an error occurs.
+pragma solidity ^0.5.0;
+contract Test {
+function getResult() public pure returns(uint product, uint sum){
+uint a = 1;
+uint b = 2;
+product = a * b;
+sum = a + b;
+}
+}
+D)Fallback Function:
+Fallback function is a special function available to a contract.
+pragma solidity ^0.5.0;
+contract Test {
+uint public x ;
+function() external { x = 1; }
+}
+contract Sink {
+function() external payable { }
+}
+contract Caller {
+function callTest(Test test) public returns (bool) {
+(bool success,) = address(test).call(abi.encodeWithSignature("nonExistingFunction()"));
+require(success);
+// test.x is now 1
+address payable testPayable = address(uint160(address(test)));
+// Sending ether to Test contract,
+// the transfer will fail, i.e. this returns false here.
+return (testPayable.send(2 ether));
+}
+function callSink(Sink sink) public returns (bool) {
+address payable sinkPayable = address(sink);
+return (sinkPayable.send(2 ether));
+}
+}

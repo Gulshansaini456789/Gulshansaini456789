@@ -1,0 +1,71 @@
+Practical 9
+Aim: Build Dapps with angular[using truffle and ganache cli]
+Step 1:Install the required package –on new terminal 1 type these commands
+sudo apt-get -y install curl git vim build-essential
+sudo apt-get install curl software-properties-common
+sudo apt install npm
+sudo npm install -g web3
+sudo apt-get install nodejs
+sudo apt install python3.9
+curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
+sudo npm install --global node-sass@latest
+sudo npm install -g truffle@latest
+sudo npm install -g ganache-cli
+export NODE_OPTIONS=--openssl-legacy-provider
+Step 2: Create a new directory
+mkdir myproject
+cd myproject
+Step 3:Initialize the project folder
+truffle init
+########################
+////to update npm//
+sudo npm cache clean -f
+sudo npm install -g n
+sudo n latest
+######################
+Step 4: Now create a new contract
+nano contracts/HelloWorld.sol 
+Step 5:Add the following code in HelloWorld.sol
+pragma solidity ^0.8.0;
+contract HelloWorld {
+ function sayHello() public pure returns(string memory){
+ return("hello world");
+ }
+}
+Step 6:Edit default configuration file
+nano migrations/1_initial_migration.js 
+Step 7: Edit this line in the file
+const Migrations = artifacts.require("HelloWorld");
+module.exports = function (deployer) {
+ deployer.deploy(Migrations,"hello");
+};
+Step 8: Edit network configuration file
+sudo nano truffle-config.js 
+Remove all line(press CTRL +K) from the file and add the following lines
+#########################
+module.exports = {
+ networks: {
+ development: {
+ host: "127.0.0.1",
+ port: 8545,
+ network_id: "*",
+ }
+ }
+}
+#########################
+Step 9: start ganache-cli –Switch/Open to terminal 2
+ganache-cli
+Step 10: deploy the truffle deploy- On terminal 1
+truffle deploy
+[Note contract address]
+Step 11: Open truffle console - On terminal 1
+truffle console
+Step 11: Get reference of contact
+contract = await HelloWorld.at('0x2C403EE1b30F56C0c773089c1Eb9DddF1499C969')
+[Replace '0x2C403EE1b30F56C0c773089c1Eb9DddF1499C969' with your contact address; every time 
+you compile/deploy a new contract address will be generated]
+Step 12: Call the function from the contract
+a = await contract.sayHello()
+[In case you are getting any error for version; change the solidity version in HelloWorld.sol]
+Example 2:
+Save-> Deploy ->Open console

@@ -1,0 +1,554 @@
+Practical 1
+A. A simple client class that generates the private and public keys by using the built-in Python 
+RSA algorithm and test it.
+After Creating Ubuntu VM-> Login -> Open Terminal -> Install below packages
+Code :
+pip3 install Crypto
+pip3 install pycrypto
+import hashlib
+import random
+import binascii
+import datetime
+import collections
+from Crypto.PublicKey import RSA
+from Crypto import Random
+from Crypto.Cipher import PKCS1_v1_5
+class Client:
+ def __init__(self):
+ random = Random.new().read
+ self._private_key = RSA.generate(1024, random)
+ self._public_key = self._private_key.publickey()
+ self._signer = PKCS1_v1_5.new(self._private_key)
+ @property 
+ def identity(self):
+ return binascii.hexlify(self._public_key.exportKey(format='DER')).decode('ascii
+Dinesh = Client()
+print ("sender ",Dinesh.identity)
+Output:
+sender 30819f300d06092a864886f………
+
+
+
+
+B. Create multiple transactions and display them
+Code:
+import hashlib
+import binascii
+import datetime
+import collections
+from Crypto.PublicKey import RSA
+from Crypto import Random
+from Crypto.Cipher import PKCS1_v1_5
+from collections import OrderedDict
+import Crypto
+import Crypto.Random
+from Crypto.Hash import SHA
+from Crypto.Signature import PKCS1_v1_5
+class Client:
+ def __init__(self):
+ random = Random.new().read
+ self._private_key = RSA.generate(1024, random)
+ self._public_key = self._private_key.publickey()
+ self._signer = PKCS1_v1_5.new(self._private_key)
+ @property
+ def identity(self):
+ return binascii.hexlify(self._public_key.exportKey(format='DER')).decode('ascii')
+class Transaction:
+ def __init__(self, sender, recipient, value):
+ self.sender = sender
+ self.recipient = recipient
+ self.value = value
+ self.time = datetime.datetime.now()
+ def to_dict(self):
+ if self.sender == "Genesis":
+ identity = "Genesis"
+ else:
+ identity = self.sender.identity
+ return collections.OrderedDict({
+ 'sender': identity,
+ 'recipient': self.recipient,
+ 'value': self.value,
+ 'time' : self.time})
+ def sign_transaction(self):
+ private_key = self.sender._private_key
+ signer = PKCS1_v1_5.new(private_key)
+ h = SHA.new(str(self.to_dict()).encode('utf8'))
+ return binascii.hexlify(signer.sign(h)).decode('ascii')
+def display_transaction(transaction):
+ #for transaction in transactions:
+ dict = transaction.to_dict()
+ print ("sender: " + dict['sender'])
+ print ('-----')
+ print ("recipient: " + dict['recipient'])
+ print ('-----')
+ print ("value: " + str(dict['value']))
+ print ('-----')
+ print ("time: " + str(dict['time']))
+ print ('-----')
+transactions = []
+A = Client()
+B = Client()
+t1 = Transaction(
+ A,
+ B.identity,
+ 15.0
+)
+t1.sign_transaction()
+display_transaction (t1)
+Output:
+sender: 30819f300d0609…….
+-----
+recipient: 30819f300d06…..
+-----
+value: 15.0
+-----
+time: 2022-04-26 04:00:21.070283
+-----
+
+
+
+
+C. Create a transaction class to send and receive money and test it
+Code:
+# following imports are required by PKI
+import hashlib
+import binascii
+import datetime
+import collections
+from Crypto.PublicKey import RSA
+from Crypto import Random
+from Crypto.Cipher import PKCS1_v1_5
+from collections import OrderedDict
+import Crypto
+import Crypto.Random
+from Crypto.Hash import SHA
+from Crypto.Signature import PKCS1_v1_5
+class Client:
+ def __init__(self):
+ random = Random.new().read
+ self._private_key = RSA.generate(1024, random)
+ self._public_key = self._private_key.publickey()
+ self._signer = PKCS1_v1_5.new(self._private_key)
+ @property
+ def identity(self):
+ return binascii.hexlify(self._public_key.exportKey(format='DER')).decode('ascii')
+class Transaction:
+ def __init__(self, sender, recipient, value):
+ self.sender = sender
+ self.recipient = recipient
+ self.value = value
+ self.time = datetime.datetime.now()
+ def to_dict(self):
+ if self.sender == "Genesis":
+ identity = "Genesis"
+ else:
+ identity = self.sender.identity
+ return collections.OrderedDict({
+ 'sender': identity,
+ 'recipient': self.recipient,
+ 'value': self.value,
+ 'time' : self.time})
+ def sign_transaction(self):
+ private_key = self.sender._private_key
+ signer = PKCS1_v1_5.new(private_key)
+ h = SHA.new(str(self.to_dict()).encode('utf8'))
+ return binascii.hexlify(signer.sign(h)).decode('ascii')
+def display_transaction(transaction):
+ #for transaction in transactions:
+ dict = transaction.to_dict()
+ print ("sender: " + dict['sender'])
+ print ('-----')
+ print ("recipient: " + dict['recipient'])
+ print ('-----')
+ print ("value: " + str(dict['value']))
+ print ('-----')
+ print ("time: " + str(dict['time']))
+ print ('-----')
+transactions = []
+Dinesh = Client()
+Ramesh = Client()
+Suresh = Client()
+t1 = Transaction(
+ Dinesh,
+ Ramesh.identity,
+ 15.0
+)
+t1.sign_transaction()
+transactions.append(t1)
+t2 = Transaction(
+ Ramesh,
+ Suresh.identity,
+ 25.0
+)
+t2.sign_transaction()
+transactions.append(t2)
+t3 = Transaction(
+ Ramesh,
+ Suresh.identity,
+ 200.0
+)
+t3.sign_transaction()
+transactions.append(t3)
+tn=1
+for t in transactions:
+ print("Transaction #",tn) 
+ display_transaction (t)
+ tn=tn+1
+ print ('--------------')
+Output:
+Transaction # 1
+sender: 30819f300d060…
+-----
+recipient: 30819f300d02a864….
+-----
+value: 15.0
+-----
+time: 2022-04-26 04:07:59.162213
+-----
+--------------
+Transaction # 2
+sender: 30819f300d06092a8…..
+-----
+recipient: 30819f300d06092a8…..
+-----
+value: 25.0
+-----
+time: 2022-04-26 04:07:59.165396
+-----
+--------------
+Transaction # 3
+sender: 30819f300d06092a8648….
+-----
+recipient: 30819f300d06092a86488…
+-----
+value: 200.0
+-----
+time: 2022-04-26 04:07:59.168579
+-----
+--------------
+
+
+
+
+
+D. Create a blockchain, a genesis block and execute it.
+Code:
+import hashlib
+import binascii
+import datetime
+import collections
+from Crypto.PublicKey import RSA
+from Crypto import Random
+from Crypto.Cipher import PKCS1_v1_5
+from collections import OrderedDict
+import Crypto
+import Crypto.Random
+from Crypto.Hash import SHA
+from Crypto.Signature import PKCS1_v1_5
+class Client:
+ def __init__(self):
+ random = Random.new().read
+ self._private_key = RSA.generate(1024, random)
+ self._public_key = self._private_key.publickey()
+ self._signer = PKCS1_v1_5.new(self._private_key)
+ @property
+ def identity(self):
+ return binascii.hexlify(self._public_key.exportKey(format='DER')).decode('ascii')
+class Transaction:
+ def __init__(self, sender, recipient, value):
+ self.sender = sender
+ self.recipient = recipient
+ self.value = value
+ self.time = datetime.datetime.now()
+ def to_dict(self):
+ if self.sender == "Genesis":
+ identity = "Genesis"
+ else:
+ identity = self.sender.identity
+ return collections.OrderedDict({
+ 'sender': identity,
+ 'recipient': self.recipient,
+ 'value': self.value,
+ 'time' : self.time})
+ def sign_transaction(self):
+ private_key = self.sender._private_key
+ signer = PKCS1_v1_5.new(private_key)
+ h = SHA.new(str(self.to_dict()).encode('utf8'))
+ return binascii.hexlify(signer.sign(h)).decode('ascii')
+def display_transaction(transaction):
+ #for transaction in transactions:
+ dict = transaction.to_dict()
+ print ("sender: " + dict['sender'])
+ print ('-----')
+ print ("recipient: " + dict['recipient'])
+ print ('-----')
+ print ("value: " + str(dict['value']))
+ print ('-----')
+ print ("time: " + str(dict['time']))
+ print ('-----')
+def dump_blockchain (self):
+ print ("Number of blocks in the chain: " + str(len (self)))
+ for x in range (len(TPCoins)):
+ block_temp = TPCoins[x]
+ print ("block # " + str(x))
+ for transaction in block_temp.verified_transactions:
+ display_transaction (transaction)
+ print ('--------------')
+ print ('=====================================')
+ 
+class Block:
+ def __init__(self):
+ self.verified_transactions = []
+ self.previous_block_hash = ""
+ self.Nonce = ""
+ 
+Dinesh = Client()
+t0 = Transaction (
+ "Genesis",
+ Dinesh.identity,
+ 500.0
+)
+block0 = Block()
+block0.previous_block_hash = None
+Nonce = None
+block0.verified_transactions.append (t0)
+digest = hash (block0)
+last_block_hash = digest
+TPCoins = []
+TPCoins.append (block0)
+dump_blockchain(TPCoins)
+Output:
+Number of blocks in the chain: 1
+block # 0
+sender: Genesis
+-----
+recipient: 30819f300d06092…..
+-----
+value: 500.0
+-----
+time: 2022-04-26 04:24:05.232662
+
+
+
+
+
+
+E. Create a mining function and test it.
+Code:
+import hashlib
+def sha256(message):
+ return hashlib.sha256(message.encode('ascii')).hexdigest()
+ 
+def mine(message, difficulty=1):
+ assert difficulty >= 1
+ #if(difficulty <1):
+ # return
+ #'1'*2=> '11'
+ prefix = '1' * difficulty
+ print("prefix",prefix)
+ for i in range(1000):
+ digest = sha256(str(hash(message)) + str(i))
+ print("testing=>"+digest)
+ if digest.startswith(prefix):
+ print ("after " + str(i) + " iterations found nonce: "+ digest)
+ return i #i= nonce value
+ 
+mine ("test message",2)
+Output:
+prefix 11
+testing=>ab7d1f2b4ba63486a274d7a8c5e4dde793c2d47069ae19ab832dc1177622a182
+testing=>cf0a36c4f0c3107cba7a8ebe690db004a01f659bc0aed3b327f01fab0065bf41
+testing=>fb0eac040f5f40cd4a39373ca0e6165c07a36db3df510b4c0ad4d45654caeabb
+testing=>a298e97de6df74e3856aabbd5aeed9807652d98a9911a6431bdb3bad0ad2a7bd
+testing=>7ff8aa3e5b40e1b5bed59ab464c9b98ceff64b2445cc446cc89ecd93330cba1e
+…….
+testing=>1cddb5b7e9af6eda960e734606c33f0ce676a7e557a22ba4d7b9af557b0c0360
+testing=>29d2f56130e7b276b3cfb94687ff3b1d5c79b6dc8238fe259aae1f5af19fd8b2
+testing=>3a5f4dcfed5301f36be80fd7d42573b1585ea4ef9037e96853affe66d68f8a04
+testing=>ddb4d9dc8c7f20443eedc9ac798aebb2c080cc46926dc0151760e37097bf2dcf
+testing=>4fb1010880723ce012526941ae6236260852c8e995583d0d2f65b6f9ff655c61
+testing=>11038c5fc4f90108f4198097c76c9af5d38c92b48fe27968eacbd89324fe9d2a
+after 21 iterations found nonce: 
+11038c5fc4f90108f4198097c76c9af5d38c92b48fe27968eacbd89324fe9d2a
+21
+
+
+
+
+
+
+F. Add blocks to the miner and dump the blockchain.
+# following imports are required by PKI
+import hashlib
+import random
+import binascii
+import datetime
+import collections
+from Crypto.PublicKey import RSA
+from Crypto import Random
+from Crypto.Cipher import PKCS1_v1_5
+from collections import OrderedDict
+import Crypto
+import Crypto.Random
+from Crypto.Hash import SHA
+from Crypto.Signature import PKCS1_v1_5
+class Client:
+ def __init__(self):
+ random = Random.new().read
+ self._private_key = RSA.generate(1024, random)
+ self._public_key = self._private_key.publickey()
+ self._signer = PKCS1_v1_5.new(self._private_key)
+ @property
+ def identity(self):
+ return binascii.hexlify(self._public_key.exportKey(format='DER')).decode('ascii')
+class Transaction:
+ def __init__(self, sender, recipient, value):
+ self.sender = sender
+ self.recipient = recipient
+ self.value = value
+ self.time = datetime.datetime.now()
+ def to_dict(self):
+ if self.sender == "Genesis":
+ identity = "Genesis"
+ else:
+ identity = self.sender.identity
+ return collections.OrderedDict({
+ 'sender': identity,
+ 'recipient': self.recipient,
+ 'value': self.value,
+ 'time' : self.time})
+ def sign_transaction(self):
+ private_key = self.sender._private_key
+ signer = PKCS1_v1_5.new(private_key)
+ h = SHA.new(str(self.to_dict()).encode('utf8'))
+ return binascii.hexlify(signer.sign(h)).decode('ascii')
+def display_transaction(transaction):
+ #for transaction in transactions:
+ dict = transaction.to_dict()
+ print ("sender: " + dict['sender'])
+ print ('-----')
+ print ("recipient: " + dict['recipient'])
+ print ('-----')
+ print ("value: " + str(dict['value']))
+ print ('-----')
+ print ("time: " + str(dict['time']))
+ print ('-----')
+def dump_blockchain (self):
+ print ("Number of blocks in the chain: " + str(len (self)))
+ for x in range (len(TPCoins)):
+ block_temp = TPCoins[x]
+ print ("block # " + str(x))
+ for transaction in block_temp.verified_transactions:
+ display_transaction (transaction)
+ print ('--------------')
+ print ('=====================================')
+ 
+class Block:
+ def __init__(self):
+ self.verified_transactions = []
+ self.previous_block_hash = ""
+ self.Nonce = ""
+ 
+def sha256(message):
+ return hashlib.sha256(message.encode('ascii')).hexdigest()
+ 
+def mine(message, difficulty=1):
+ assert difficulty >= 1
+ #if(difficulty <1):
+ # return
+ #'1'*3=> '111'
+ prefix = '1' * difficulty
+ for i in range(1000):
+ digest = sha256(str(hash(message)) + str(i))
+ if digest.startswith(prefix):
+ return i #i= nonce value
+A = Client()
+B =Client()
+C =Client()
+t0 = Transaction (
+ "Genesis",
+ A.identity,
+ 500.0
+)
+t1 = Transaction (
+ A,
+ B.identity,
+ 40.0
+)
+t2 = Transaction (
+ A,
+ C.identity,
+ 70.0
+)
+t3 = Transaction (
+ B,
+ C.identity,
+ 700.0
+)
+#blockchain
+TPCoins = []
+block0 = Block()
+block0.previous_block_hash = None
+Nonce = None
+block0.verified_transactions.append (t0)
+digest = hash (block0)
+last_block_hash = digest #last_block_hash it is hash of block0
+TPCoins.append (block0)
+block1 = Block()
+block1.previous_block_hash = last_block_hash
+block1.verified_transactions.append (t1)
+block1.verified_transactions.append (t2)
+block1.Nonce=mine (block1, 2)
+digest = hash (block1)
+last_block_hash = digest
+TPCoins.append (block1)
+block2 = Block()
+block2.previous_block_hash = last_block_hash
+block2.verified_transactions.append (t3)
+Nonce = mine (block2, 2)
+block2.Nonce=mine (block2, 2)
+digest = hash (block2)
+last_block_hash = digest
+TPCoins.append (block2)
+dump_blockchain(TPCoins)
+Output:
+Number of blocks in the chain: 3
+block # 0
+sender: Genesis
+-----
+recipient: 30819f300d0609…..
+-----
+value: 500.0
+-----
+time: 2022-04-26 04:30:59.070952
+-----
+--------------
+=====================================
+block # 1
+sender: 30819f300d06092a86…..
+-----
+recipient: 30819f300d06092a…..
+-----
+value: 40.0
+-----
+time: 2022-04-26 04:30:59.071076
+-----
+--------------
+sender: 30819f300d06092a86….
+-----
+recipient: 30819f300d06092a….
+-----
+value: 70.0
+-----
+time: 2022-04-26 04:30:59.071174
+-----
+--------------
+=====================================
+block # 2
+sender: 30819f300d06092a….
+-----
+recipient: 30819f300d06092a….
+-----
+value: 700.0
+-----
+time: 2022-04-26 04:30:59.071272

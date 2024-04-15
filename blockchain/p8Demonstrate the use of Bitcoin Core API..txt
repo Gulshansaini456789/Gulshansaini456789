@@ -1,0 +1,14 @@
+Practical 8
+Aim: Demonstrate the use of Bitcoin Core API.
+Open Python IDLE and create new Script.
+########################
+from bitcoinlib.wallets import Wallet
+w = Wallet.create('Wallet6')
+key1 = w.get_key()
+print('Wallet Address:',key1.address)
+w.scan()
+print(w.info())
+####################
+Open CMD and install bitcoinlib package
+pip install bitcoinlib
+After installing package run the program from Python IDLE
