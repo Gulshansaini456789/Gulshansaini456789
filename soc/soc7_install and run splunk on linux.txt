@@ -1,0 +1,38 @@
+Install and run splunk on linux
+
+1. go to the splunk.com website->click on free splunk -> enter details and create accounton splunk->
+copy wget -O splunk-9.2.0.1-d8ae995bf219-linux-2.6-amd64.deb 
+"https://download.splunk.com/products/splunk/releases/9.2.0.1/linux/splunk-9.2.0.1-
+d8ae995bf219-linux-2.6-amd64.deb"
+and 
+open virtual box in that open kali linux
+in that
+2. install the splunk on kali linux.
+
+─(yusuf㉿kali)-[/home/yusuf]
+└─PS> wget -O splunk-9.2.0.1-d8ae995bf219-linux-2.6-amd64.deb 
+"https://download.splunk.com/products/splunk/releases/9.2.0.1/linux/splunk-9.2.0.1-
+d8ae995bf219-linux-2.6-amd64.deb"
+
+─(yusuf㉿kali)-[/home/yusuf/Desktop/Security Operation Center]
+└─PS> sudo dpkg -i ./splunk-9.2.0.1-d8ae995bf219-linux-2.6-amd64.deb
+
+3. configure the splunk 
+──(yusuf㉿kali)-[/home/yusuf/Desktop/Security Operation Center]
+└─PS> sudo /opt/splunk/bin/splunk start 
+
+Splunk software must create an administrator account during startup, Create administrator 
+username.
+Please enter an administrator username: gulshan
+Please enter a new password: ****
+Please confirm new password: ****
+After Some few seconds it will loads and configure the web interface, it will provide port 
+number:8000
+The Splunk web interface is at http://kali:8000
+Check your network address using ifconfig command
+┌──(yusuf㉿kali)-[/home/yusuf/Desktop/Security Operation Center]
+└─PS> ifconfig 
+
+4.Open the Browser type in URL 
+https://192.168.241.132:8000/en-GB/app/launcher/home
+ 

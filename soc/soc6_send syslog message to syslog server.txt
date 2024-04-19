@@ -1,0 +1,20 @@
+send syslog message to syslog server
+1. A linux host(ubuntu server)
+open virtual box in that open ubuntu terminal
+and fire the below commands
+~$ sudo apt-get update && sudo apt-get update
+~$ sudo nano /etc/rsyslog.conf
+~$ sudo service rsyslog restart
+~$ sudo netstat -lupn
+~$ logger Welcome to our own Syslog Server
+~$ sudo tail /var/log/syslog
+
+2. Another linux host(syslog client)
+in syslog virtual machine
+commands
+~$ sudo apt-get upgrade && apt-get update
+~$ sudo service rsyslog restart
+~$ logger We are Configured Syslog Client that can send 
+message to Ubuntu Syslog Server
+~$ sudo tail /var/log/syslog
+

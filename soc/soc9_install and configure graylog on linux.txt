@@ -1,0 +1,76 @@
+install and configure graylog server on linux
+
+1. install openJDK
+ open virtualmachine box in that open syslog server terminal
+commands
+~$ sudo apt -y install bash-completion apt-transport-https uuidruntime pwgen openjdk-11-jre-headless
+2. Install elasticsearch
+~$ wget -qO - https://artifacts.elastic.co/GPG-KEYelasticsearch | sudo apt-key add -
+Add the Elasticsearch repository.
+~$ echo "deb https://artifacts.elastic.co/packages/oss-6.x/apt 
+stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list
+Update the system.
+~$ sudo apt update
+Install Elasticsearch.
+~$ sudo apt -y install elasticsearch-oss
+Edit the Elasticsearch configuration file.
+~$ sudo nano /etc/elasticsearch/elasticsearch.yml
+Add these two lines to the end of the file.
+cluster.naem: graylog
+action.auto_create_index: false
+Save and exit the file & reload the system daemon.
+by pressing escape exit the file
+Restart Elasticsearch service.
+~$ sudo systemctl daemon-reload
+~$ sudo systemctl restart elasticsearch
+Enable Elasticsearch to run on system startup.
+~$ sudo systemctl enable elasticsearch
+3. install mongodb
+Start the MongoDB service.
+~$ sudo apt-get install gnupg
+~$ wget -qO - https://www.mongodb.org/static/pgp/server6.0.asc | sudo apt-key ad
+~$ echo "deb [ arch=amd64,arm64 ] 
+https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee 
+/etc/apt/sources.list.d/mongodb-org-6.0.list
+Start the MongoDB service.
+~$ sudo service mongod start
+~$ sudo systemctl enable mongod
+4. install graylog
+Add the Graylog repository.
+~$ wget https://packages.graylog2.org/repo/packages/graylog4.1-repository_latest.deb
+Install the Graylog server package.
+~$ sudo dpkg -i graylog-4.1-repository_latest.deb
+Update the system.
+~$ sudo apt update
+Install Graylog.
+~$ sudo apt -y install graylog-server
+Generate a 96-character random string for Graylog and save a copy to use in the Graylog 
+server configuration file.
+yZi6xi10Ww8UkbLi7yBCnbpi54QqqCcYXtGTcLIOercyAgflffd9hmoVjQV2yYzHABe5rT
+YTUBZOz3wAiny7VQMehkWRs7Wg
+Choose a strong password for your admin account and generate a 64-character hash. For 
+example, if you choose StrongPassword:
+05a181f00c157f70413d33701778a6ee7d2747ac18b9c0fbb8bd71a62dd7a223 -
+Edit the Graylog configuration file.
+~$ sudo nano /etc/graylog/server/server.conf
+in nano edit
+http_bind_address = 127.0.0.1:9000
+Save and close the file & restart the system daemon.
+~$ sudo systemctl daemon-reload
+Restart the Graylog service.
+~$ sudo systemctl restart graylog-server
+Enable the Graylog service to run on system startup.
+~$ sudo systemctl enable graylog-server
+Verify the status of the Graylog server.
+~$ sudo systemctl status graylog-server
+5. Open your web browser and navigate to your servers IP address at port 9000. for example:
+192.0.0.1:9000
+
+
+
+
+
+
+
+
+

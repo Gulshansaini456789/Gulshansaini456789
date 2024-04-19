@@ -1,0 +1,14 @@
+DNS traffic
+start wireshark
+in windows command prompt-
+>ipconfig/flushdns
+>nslookup www.cisco.com
+then open the wireshark-
+Observe the traffic captured in the Wireshark Packet List pane. Enter udp.port == 53 in the filter box 
+and click the arrow (or press enter) to display only DNS packets.
+Select the DNS packet contains Standard query and A www.cisco.com in the Info column.
+Expand Ethernet II to view the details
+Expand Internet Protocol Version 4.
+Expand the User Datagram Protocol.
+Expand Domain Name System (query) in the Packet Details pane.
+Part 3: Explore DNS Response Traffic

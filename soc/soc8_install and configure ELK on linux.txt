@@ -1,0 +1,40 @@
+install and configure ELK on linux
+
+1. install dependencies
+in virtual box open ubuntu server terminal
+commands in terminal
+~$ sudo apt-get install openjdk-8-jdk
+2. install nginx
+~$ sudo apt-get install nginx
+3. add elastic repository
+~$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo 
+apt-key add -
+~$ sudo apt-get install apt-transport-https
+~$ echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | 
+sudo tee –a /etc/apt/sources.list.d/elastic-7.x.list
+4. install elasticsearch
+~$ sudo apt-get update
+~$ sudo apt-get install elasticsearch
+
+Configure Elasticsearch
+1. Elasticsearch uses a configuration file to control how it behaves. Open the configuration 
+file for editing in a text editor of your choice. We will be using nano:
+~$ sudo nano/etc/elasticsearch/elasricsearch.yml
+in nana do some changes by removing the #
+network.host: localhost
+http.port: 9200
+discovery.type: single-node
+now do some changes in jvm:
+~$ sudo nano/etc/elasticsearch/jvm.options
+-Xms512m
+-Xmx512m
+exit nano by using wq command or press escap
+then restart the elasticsearch by using
+~$ sudo systemctl start elasticsearch.service
+then enable elastisearch:
+~$ sudo systemctl enable elasticsearch.service
+Test Elasticsearch
+~$ curl -X GET "localhost:9200"
+
+
+ 

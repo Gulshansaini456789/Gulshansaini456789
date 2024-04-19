@@ -1,0 +1,11 @@
+syslog server
+
+open virtual box in that open ubuntu terminal
+and fire the below commands
+~$ sudo apt-get update && sudo apt-get update
+~$ sudo nano /etc/rsyslog.conf
+~$ sudo service rsyslog restart
+~$ sudo netstat -lupn
+~$ logger Welcome to our own Syslog Server
+~$ sudo tail /var/log/syslog
+

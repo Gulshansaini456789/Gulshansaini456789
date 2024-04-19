@@ -1,0 +1,15 @@
+command for encryption
+1. cd lab.support.files/
+2. ls
+3. cat letter_to_grandma.txt
+4. openssl aes-256-cbc -in letter_to_grandma.txt -out 
+message.enc
+5. cat message.enc
+6. $ openssl aes-256-cbc -a -in letter_to_grandma.txt -out 
+message.enc
+7. cat message.enc 
+
+command for decryption
+1.  openssl aes-256-cbc -a -d -in message.enc -out 
+decrypted_letter.txt
+2. cat decrypted_letter.txt

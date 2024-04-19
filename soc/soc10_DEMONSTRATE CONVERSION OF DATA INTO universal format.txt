@@ -1,0 +1,30 @@
+DEMONSTRATE CONVERSION OF DATA INTO A
+UNIVERSAL FORMAT
+
+Part 1: Normalize Timestamps in a Log File
+[analyst@secOps ~]$ cd ./lab.support.files/
+
+[analyst@secOps lab.support.files]$ ls -
+
+[analyst@secOps lab.support.files]$ awk &apos;BEGIN {FS=OFS="|"}
+{$3=strftime("%c",$3)} {print}&apos; applicationX_in_epoch.log 
+
+[analyst@secOps lab.support.files]$ nano applicationX_in_epoch.log
+
+[analyst@secOps lab.support.files]$ awk &apos;BEGIN {FS=OFS="|"}
+{$3=strftime("%c",$3)} {print}&apos; 
+applicationX_in_epoch.log>applicationX_in_human.log
+
+[analyst@secOps lab.support.files]$ cat applicationX_in_human.log
+
+
+Part 2: Normalize Timestamps in an Apache Log File
+
+[analyst@secOps lab.support.files]$ cat apache_in_epoch.log 
+
+[analyst@secOps lab.support.files]$ awk &apos;BEGIN {FS=OFS=" 
+"}{$4=strftime("%c",$4)} {print}&apos; 
+/home/analyst/lab.support.files/apache_in_epoch.log
+
+[analyst@secOps lab.support.files]$ awk &apos;BEGIN {FS=OFS=" 
+"}{gsub(/\[|\]/,"",$4)}{print}{$4=strftime("%c",$4)}{print}&apos; apache_in_epoch.log

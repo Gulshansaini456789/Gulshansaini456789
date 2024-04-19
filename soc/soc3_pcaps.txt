@@ -1,0 +1,15 @@
+Pcap
+
+1 analyze pre-captured logs and traffic captures.
+commands
+- cd lab.support.files/pcaps/
+- ls -l
+- wireshark-gtk nimda.download.pcap &
+a nimda.downlad.pcap window will opwn
+select the 4th option
+then select 1st option right click it then click follow then click tcp
+select the 4th option then go to files select export objects and then click HTTP
+select the one which is present on the screen and click save as
+then a window will appear 
+click on home->analyst->select pcaps and click save
+then return to terminal and list the files in the folder using ls -l
